@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom"; // Import the hook
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
@@ -5,13 +6,15 @@ import * as Yup from "yup";
 import { SignupAction, LoginAction } from "../../Base/auth";
 import Clouds from "../../assets/Clouds.png";
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    full_name: "",
-    email: "",
-    password: "",
-  });
+  const Login = () => {
+    const navigate = useNavigate(); // Initialize navigate
+    const [formData, setFormData] = useState({
+      username: "",
+      full_name: "",
+      email: "",
+      password: "",
+    });
+
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -79,45 +82,47 @@ const Login = () => {
       setIsValid((prev) => ({ ...prev, [name]: false }));
     }
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      await currentSchema.validate(formData, { abortEarly: false });
-      setErrors({});
-      const action = isLogin ? LoginAction : SignupAction;
-      const response = await action(formData);
-
-      //mark that user has submitted.........
-      localStorage.setItem("hasSignedUp", "true");
-
-      if (response.status >= 200 && response.status < 300) {
-        toast.success(isLogin ? "Login successful" : "Signup successful");
-        if (!isLogin) {
-          setPopupMessage("Check your email address for verification.");
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        setLoading(true);
+        await currentSchema.validate(formData, { abortEarly: false });
+        setErrors({});
+        const action = isLogin ? LoginAction : SignupAction;
+        const response = await action(formData);
+  
+        localStorage.setItem("hasSignedUp", "true");
+  
+        if (response.status >= 200 && response.status < 300) {
+          toast.success(isLogin ? "Login successful" : "Signup successful");
+          if (isLogin) {
+            // Redirect to the dashboard after successful login
+            navigate("/dashboard"); // Ensure "/dashboard" is the correct path
+          } else {
+            setPopupMessage("Check your email address for verification.");
+          }
+        } else {
+          toast.error("Unexpected response. Please try again.");
         }
-      } else {
-        toast.error("Unexpected response. Please try again.");
+      } catch (err) {
+        if (err.name === "ValidationError") {
+          const validationErrors = {};
+          err.inner.forEach((error) => {
+            validationErrors[error.path || "unknown"] = error.message;
+          });
+          setErrors(validationErrors);
+        } else if (err.response) {
+          console.error("API Error:", err.response.data);
+          toast.error(err.response.data.message || "Something went wrong!");
+        } else {
+          console.error("Unexpected Error:", err);
+          toast.error("An unexpected error occurred. Please try again.");
+        }
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      if (err.name === "ValidationError") {
-        const validationErrors = {};
-        err.inner.forEach((error) => {
-          validationErrors[error.path || "unknown"] = error.message;
-        });
-        setErrors(validationErrors);
-      } else if (err.response) {
-        console.error("API Error:", err.response.data);
-        toast.error(err.response.data.message || "Something went wrong!");
-      } else {
-        console.error("Unexpected Error:", err);
-        toast.error("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
   return (
     <ErrorBoundary>
