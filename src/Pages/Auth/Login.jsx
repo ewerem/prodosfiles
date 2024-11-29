@@ -17,6 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   const loginSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Email is required"),
@@ -69,6 +70,9 @@ const Login = () => {
 
       if (response.status >= 200 && response.status < 300) {
         toast.success(isLogin ? "Login successful" : "Signup successful");
+        if (!isLogin) {
+          setPopupMessage("Check your email address for verification.");
+        }
       } else {
         toast.error("Unexpected response. Please try again.");
       }
@@ -94,6 +98,14 @@ const Login = () => {
   return (
     <div className="flex flex-col-reverse lg:flex-row justify-between items-center min-h-screen">
       <ToastContainer />
+      {popupMessage && (
+        <div className="popup">
+          <p>{popupMessage}</p>
+          <button onClick={() => setPopupMessage("")} className="popup-close">
+            Close
+          </button>
+        </div>
+      )}
       <div className="bg-gradient-to-t from-[#773DD3] to-[#40B7D1] lg:flex items-center justify-center lg:w-1/2 p-4 lg:p-8 text-white min-h-screen">
         <div className="bg-white w-full max-w-lg p-6 md:p-8 rounded-2xl shadow-lg">
           <div className="flex justify-between mb-6">
@@ -184,6 +196,31 @@ const Login = () => {
       <div className="w-full lg:w-1/2 hidden lg:block relative bg-gray-100">
         <img src={Clouds} alt="Clouds" className="w-full h-full object-cover" />
       </div>
+      <style>
+        {`
+          .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+          }
+          .popup-close {
+            margin-top: 10px;
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+        `}
+      </style>
     </div>
   );
 };
