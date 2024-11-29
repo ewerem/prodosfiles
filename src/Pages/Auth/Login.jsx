@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import * as Yup from "yup";
@@ -18,6 +18,7 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
 
   const loginSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Email is required"),
@@ -44,6 +45,27 @@ const Login = () => {
   });
 
   const currentSchema = isLogin ? loginSchema : signupSchema;
+
+  // LocalStorage safeguard for signup prompt
+  useEffect(() => {
+    try {
+      const hasSignedUp = localStorage.getItem("hasSignedUp");
+      if (!hasSignedUp) {
+        setShowSignupPrompt(true);
+      }
+    } catch (err) {
+      console.error("Error accessing localStorage:", err);
+    }
+  }, []);
+
+  const handleClosePopup = () => {
+    try {
+      setShowSignupPrompt(false);
+      localStorage.setItem("hasSignedUp", "true");
+    } catch (err) {
+      console.error("Error writing to localStorage:", err);
+    }
+  };
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -96,134 +118,168 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row justify-between items-center min-h-screen">
-      <ToastContainer />
-      {popupMessage && (
-        <div className="popup">
-          <p>{popupMessage}</p>
-          <button onClick={() => setPopupMessage("")} className="popup-close">
-            Close
-          </button>
-        </div>
-      )}
-      <div className="bg-gradient-to-t from-[#773DD3] to-[#40B7D1] lg:flex items-center justify-center lg:w-1/2 p-4 lg:p-8 text-white min-h-screen">
-        <div className="bg-white w-full max-w-lg p-6 md:p-8 rounded-2xl shadow-lg">
-          <div className="flex justify-between mb-6">
-            <button
-              onClick={() => {
-                setIsLogin(true);
-                setFormData({ ...formData, username: "", full_name: "" });
-                setErrors({});
-              }}
-              className={`w-1/2 py-2 text-sm md:text-base font-bold rounded-l-lg ${
-                isLogin ? "bg-[#C83AA7] text-white" : "bg-white text-[#242424]"
-              }`}
-            >
-              Login
-            </button>
-            <button
-              onClick={() => {
-                setIsLogin(false);
-                setErrors({});
-              }}
-              className={`w-1/2 py-2 text-sm md:text-base font-bold rounded-r-lg ${
-                isLogin ? "bg-white text-[#242424]" : "bg-[#C83AA7] text-white"
-              }`}
-            >
-              Sign Up
+    <ErrorBoundary>
+      <div className="flex flex-col-reverse lg:flex-row justify-between items-center min-h-screen">
+        <ToastContainer />
+        {popupMessage && (
+          <div className="popup">
+            <p>{popupMessage}</p>
+            <button onClick={() => setPopupMessage("")} className="popup-close">
+              Close
             </button>
           </div>
-          <form onSubmit={handleSubmit}>
-            <h3 className="text-xl md:text-2xl font-bold mb-4 text-center">
-              {isLogin ? "Login" : "Sign Up"}
-            </h3>
-            {!isLogin && (
-              <>
-                <InputField
-                  label="Username"
-                  name="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  error={errors.username}
-                  isValid={isValid.username}
-                />
-                <InputField
-                  label="Full Name"
-                  name="full_name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={formData.full_name}
-                  onChange={handleChange}
-                  error={errors.full_name}
-                  isValid={isValid.full_name}
-                />
-              </>
-            )}
-            <InputField
-              label="Email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              error={errors.email}
-              isValid={isValid.email}
-            />
-            <InputField
-              label="Password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="************"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-              isValid={isValid.password}
-              togglePasswordVisibility={setShowPassword}
-              showPassword={showPassword}
-            />
-            <button
-              type="submit"
-              className="bg-gradient-to-t from-[#773DD3] to-[#40B7D1] w-full py-2 rounded-lg text-white font-bold mt-4 text-sm md:text-base"
-              disabled={loading}
-            >
-              {loading ? "Processing..." : isLogin ? "Login" : "Sign Up"}
+        )}
+        {showSignupPrompt && (
+          <div className="popup">
+            <p>Welcome! Please sign up before you log in.</p>
+            <button onClick={handleClosePopup} className="popup-close">
+              Got it!
             </button>
-          </form>
+          </div>
+        )}
+        <div className="bg-gradient-to-t from-[#773DD3] to-[#40B7D1] lg:flex items-center justify-center lg:w-1/2 p-4 lg:p-8 text-white min-h-screen">
+          <div className="bg-white w-full max-w-lg p-6 md:p-8 rounded-2xl shadow-lg">
+            <div className="flex justify-between mb-6">
+              <button
+                onClick={() => {
+                  setIsLogin(true);
+                  setFormData({ ...formData, username: "", full_name: "" });
+                  setErrors({});
+                }}
+                className={`w-1/2 py-2 text-sm md:text-base font-bold rounded-l-lg ${
+                  isLogin ? "bg-[#C83AA7] text-white" : "bg-white text-[#242424]"
+                }`}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  setIsLogin(false);
+                  setErrors({});
+                }}
+                className={`w-1/2 py-2 text-sm md:text-base font-bold rounded-r-lg ${
+                  isLogin ? "bg-white text-[#242424]" : "bg-[#C83AA7] text-white"
+                }`}
+              >
+                Sign Up
+              </button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <h3 className="text-xl md:text-2xl font-bold mb-4 text-center">
+                {isLogin ? "Login" : "Sign Up"}
+              </h3>
+              {!isLogin && (
+                <>
+                  <InputField
+                    label="Username"
+                    name="username"
+                    type="text"
+                    placeholder="Enter your username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    error={errors.username}
+                    isValid={isValid.username}
+                  />
+                  <InputField
+                    label="Full Name"
+                    name="full_name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                    error={errors.full_name}
+                    isValid={isValid.full_name}
+                  />
+                </>
+              )}
+              <InputField
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                error={errors.email}
+                isValid={isValid.email}
+              />
+              <InputField
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="************"
+                value={formData.password}
+                onChange={handleChange}
+                error={errors.password}
+                isValid={isValid.password}
+                togglePasswordVisibility={setShowPassword}
+                showPassword={showPassword}
+              />
+              <button
+                type="submit"
+                className="bg-gradient-to-t from-[#773DD3] to-[#40B7D1] w-full py-2 rounded-lg text-white font-bold mt-4 text-sm md:text-base"
+                disabled={loading}
+              >
+                {loading ? "Processing..." : isLogin ? "Login" : "Sign Up"}
+              </button>
+            </form>
+          </div>
         </div>
+        <div className="w-full lg:w-1/2 hidden lg:block relative bg-gray-100">
+          <img src={Clouds} alt="Clouds" className="w-full h-full object-cover" />
+        </div>
+        <style>
+          {`
+            .popup {
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background-color: white;
+              padding: 20px;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+              z-index: 1000;
+              text-align: center;
+            }
+            .popup-close {
+              margin-top: 10px;
+              background-color: #dc3545;
+              color: white;
+              padding: 5px 10px;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+            }
+          `}
+        </style>
       </div>
-      <div className="w-full lg:w-1/2 hidden lg:block relative bg-gray-100">
-        <img src={Clouds} alt="Clouds" className="w-full h-full object-cover" />
-      </div>
-      <style>
-        {`
-          .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            text-align: center;
-          }
-          .popup-close {
-            margin-top: 10px;
-            background-color: #dc3545;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-        `}
-      </style>
-    </div>
+    </ErrorBoundary>
   );
 };
+
+// ErrorBoundary component to handle UI failures gracefully
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong. Please try again later.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
 
 const InputField = ({
   label,
