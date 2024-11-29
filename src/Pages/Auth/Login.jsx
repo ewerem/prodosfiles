@@ -61,9 +61,8 @@ const Login = () => {
   const handleClosePopup = () => {
     try {
       setShowSignupPrompt(false);
-      localStorage.setItem("hasSignedUp", "true");
     } catch (err) {
-      console.error("Error writing to localStorage:", err);
+      console.error("Error closing popup:", err);
     }
   };
 
@@ -89,6 +88,9 @@ const Login = () => {
       setErrors({});
       const action = isLogin ? LoginAction : SignupAction;
       const response = await action(formData);
+
+      //mark that user has submitted.........
+      localStorage.setItem("hasSignedUp", "true");
 
       if (response.status >= 200 && response.status < 300) {
         toast.success(isLogin ? "Login successful" : "Signup successful");
