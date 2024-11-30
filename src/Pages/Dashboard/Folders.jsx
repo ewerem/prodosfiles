@@ -141,6 +141,7 @@ import userIcon from "../../assets/user.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GetFolderAction } from "../../Base/data"; 
+import Apikit from "../../Base/Apikit";
 
 const Folders = () => {
   const [folders, setFolders] = useState([]);
@@ -148,7 +149,7 @@ const Folders = () => {
   // Fetch folders from API
   const fetchFolders = async () => {
     try {
-      const response = await GetFolderAction(); // Make the GET request
+      const response = await Apikit ("GetFolderAction"); // Make the GET request
       if (response.status === 200) {
         setFolders(response.data.folders || []); // Update folders with data from API
         toast.success("Folders loaded successfully!", {
@@ -207,7 +208,7 @@ const Folders = () => {
   return (
     <div>
       <ToastContainer />
-      <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px]">
+      <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px] mt-[45px]">
         {/* Header Section */}
         <div className="grid grid-cols-6 gap-[16px] px-[18px] mt-[24px]">
           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">

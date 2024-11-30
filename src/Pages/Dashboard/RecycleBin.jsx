@@ -26,33 +26,33 @@ const RecycleBin = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Recycle Bin</h2>
+      <h2 className="hidden lg:block text-2xl font-bold mb-4">Recycle Bin</h2>
       {recycleBinItems.length === 0 ? (
         <p className="text-gray-500">The recycle bin is empty.</p>
       ) : (
-        <div className="border border-gray-300 rounded-md p-4 lg:ml-[300px]">
+        <div className="border border-gray-300 rounded-md p-4 md:ml-[300px] mt-8 lg:ml-[300px] ">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr>
-                <th className="border-b py-2">Name</th>
-                <th className="border-b py-2">Deleted At</th>
-                <th className="border-b py-2 text-center">Actions</th>
+                <th className="border-b py-2 font-[Poppins] font-medium text-[#242424] text-xs ">Name</th>
+                <th className="border-b py-2 font-[Poppins] font-medium text-[#242424] text-xs">Deleted At</th>
+                <th className="border-b py-2 font-[Poppins] font-medium text-[#242424] text-xs text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               {recycleBinItems.map((item) => (
-                <tr key={item.id} className="border-b">
-                  <td className="py-2">{item.name}</td>
-                  <td className="py-2">{item.deletedAt}</td>
-                  <td className="py-2 text-center">
+                <tr key={item.id} className="border-b ">
+                  <td className="py-1 text-xs text-[#7E838B] font-[Poppins]">{item.name}</td>
+                  <td className="py-1 text-xs text-[#7E838B] font-[Poppins]">{item.deletedAt}</td>
+                  <td className="py-1 text-xs text-[#7E838B] font-[Poppins] text-center">
                     <button
-                      className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
+                      className="bg-blue-500 text-white px-4 py-1 rounded gap-2 "
                       onClick={() => restoreItem(item.id)}
                     >
                       Restore
                     </button>
                     <button
-                      className="bg-red-500 text-white px-4 py-1 rounded"
+                      className="bg-red-500 text-white px-1 py-1 rounded"
                       onClick={() => deleteItemPermanently(item.id)}
                     >
                       Delete Permanently

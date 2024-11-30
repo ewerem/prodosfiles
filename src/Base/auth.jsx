@@ -10,12 +10,12 @@ export const LoginAction = (data) =>{
 };
 
 export const LoginOutAction = (data) =>{
-    return Apikit.post("/logout", data);
+    return Apikit.post("/logout/", data);
 };
 
 
 export const ResetAction = (data, token)=>{
-    return Apikit.post("/reset-password", data,{
+    return Apikit.post("/reset-password/", data,{
      headers:{
         authorization: `Bearer ${token}`,
      },
@@ -23,7 +23,7 @@ export const ResetAction = (data, token)=>{
 };
 
 export const ResetPassword =(data,token)=> {
-    return Apikit.put("rest/pswd", data,{
+    return Apikit.put("/rest/pswd", data,{
         headers:{
             authorization:`Bearer ${token}`,
         },
