@@ -1,17 +1,45 @@
-// import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
 // import folderIcon from "../../assets/folder.png";
 // import userIcon from "../../assets/user.png";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
+// import { GetFolderAction } from "../../Base/data"; 
+// import Apikit from "../../Base/Apikit";
 
 // const Folders = () => {
-//   const [folders, setFolders] = useState([
-//     { id: 1, name: "Games", modified: "Aug, 20, 2026", size: "3.2GB" },
-//     { id: 2, name: "Tech", modified: "Jul, 15, 2026", size: "1.5GB" },
-//     { id: 3, name: "Music", modified: "Jun, 12, 2026", size: "2.8GB" },
-//     { id: 4, name: "Pictures", modified: "May, 18, 2026", size: "4.1GB" },
-//     { id: 5, name: "Videos", modified: "Apr, 10, 2026", size: "10GB" },
-//   ]);
+//   const [folders, setFolders] = useState([]);
+
+//   // Fetch folders from API
+//   const fetchFolders = async () => {
+//     try {
+//       const response = await Apikit ("GetFolderAction"); // Make the GET request
+//       if (response.status === 200) {
+//         setFolders(response.data.folders || []); // Update folders with data from API
+//         toast.success("Folders loaded successfully!", {
+//           position: "top-center",
+//           autoClose: 3000,
+//         });
+//       } else {
+//         toast.error("Failed to load folders. Please try again.", {
+//           position: "top-center",
+//           autoClose: 3000,
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error fetching folders:", error);
+//       const errorMessage =
+//         error.response?.data?.message || "An error occurred while fetching folders.";
+//       toast.error(errorMessage, {
+//         position: "top-center",
+//         autoClose: 3000,
+//       });
+//     }
+//   };
+
+//   // Fetch folders on component mount
+//   useEffect(() => {
+//     fetchFolders();
+//   }, []);
 
 //   const removeFolder = (id) => {
 //     setFolders((prevFolders) =>
@@ -43,7 +71,7 @@
 //   return (
 //     <div>
 //       <ToastContainer />
-//       <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px]">
+//       <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px] mt-[45px]">
 //         {/* Header Section */}
 //         <div className="grid grid-cols-6 gap-[16px] px-[18px] mt-[24px]">
 //           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
@@ -108,7 +136,7 @@
 
 //               {/* Share Button */}
 //               <button
-//                 className="bg-blue-500 text-white px-2 py-1 rounded text-[10px]  font-medium"
+//                 className="bg-blue-500 text-white px-2 py-1 rounded text-[10px] font-medium"
 //                 onClick={() => shareFolder(folder)}
 //               >
 //                 Share
@@ -140,16 +168,41 @@ import folderIcon from "../../assets/folder.png";
 import userIcon from "../../assets/user.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GetFolderAction } from "../../Base/data"; 
-import Apikit from "../../Base/Apikit";
+import Apikit from "../../Base/Apikit"; // Make sure Apikit is properly configured to handle API requests
 
 const Folders = () => {
   const [folders, setFolders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(null);
 
-  // Fetch folders from API
+  // Fetch the token from localStorage
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      toast.error("Authentication token not found.");
+    }
+  }, []);
+
+  // Fetch folders from the API
   const fetchFolders = async () => {
+    if (!token) {
+      toast.error("You must be logged in to fetch folders.");
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      const response = await Apikit ("GetFolderAction"); // Make the GET request
+      const response = await Apikit("GetFolderAction", {
+        method: "GET",
+        headers: {
+          "accept": "*/*",
+          "Authorization": `Bearer ${token}`, // Pass the token in the Authorization header
+        },
+      });
+
       if (response.status === 200) {
         setFolders(response.data.folders || []); // Update folders with data from API
         toast.success("Folders loaded successfully!", {
@@ -170,13 +223,17 @@ const Folders = () => {
         position: "top-center",
         autoClose: 3000,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Fetch folders on component mount
   useEffect(() => {
-    fetchFolders();
-  }, []);
+    if (token) {
+      fetchFolders(); // Fetch folders when the token is available
+    }
+  }, [token]);
 
   const removeFolder = (id) => {
     setFolders((prevFolders) =>
@@ -234,7 +291,9 @@ const Folders = () => {
         <hr className="mt-[18px]" />
 
         {/* Rows Section */}
-        {folders.length > 0 ? (
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : folders.length > 0 ? (
           folders.map((folder) => (
             <div
               key={folder.id}
@@ -299,4 +358,3 @@ const Folders = () => {
 };
 
 export default Folders;
-
