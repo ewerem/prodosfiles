@@ -88,13 +88,20 @@ const RecycleBin = () => {
 
   // Fetch the token from localStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("authToken");
     if (storedToken) {
       setToken(storedToken);
+      console.log(storedToken)
     } else {
       toast.error("Authentication token not found.");
     }
+
   }, []);
+
+
+  
+
+
 
   // Function to restore an item (local operation)
   const restoreItem = (id) => {
@@ -117,7 +124,7 @@ const RecycleBin = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // Assuming CSRF token is static or comes from another source
+          // "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // Assuming CSRF token is static or comes from another source
           "Authorization": `Bearer ${token}`, // Pass the token in the Authorization header
         },
         body: JSON.stringify({ file_id }),

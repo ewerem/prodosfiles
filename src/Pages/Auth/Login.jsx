@@ -6,14 +6,14 @@ import * as Yup from "yup";
 import { SignupAction, LoginAction } from "../../Base/auth";
 import Clouds from "../../assets/Clouds.png";
 
-  const Login = () => {
-    const navigate = useNavigate(); // Initialize navigate
-    const [formData, setFormData] = useState({
-      username: "",
-      full_name: "",
-      email: "",
-      password: "",
-    });
+const Login = () => {
+  const navigate = useNavigate(); // Initialize navigate
+  const [formData, setFormData] = useState({
+    username: "",
+    full_name: "",
+    email: "",
+    password: "",
+  });
 
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState({});
@@ -24,7 +24,9 @@ import Clouds from "../../assets/Clouds.png";
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
 
   const loginSchema = Yup.object({
-    email: Yup.string().email("Invalid email format").required("Email is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
 
@@ -37,14 +39,19 @@ import Clouds from "../../assets/Clouds.png";
       .min(2, "Full name is too short!")
       .max(50, "Full name is too long!")
       .required("Full name is required"),
-    email: Yup.string().email("Invalid email format").required("Email is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
     password: Yup.string()
       .required("Password is required")
       .min(8, "Password must be at least 8 characters")
       .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
       .matches(/[a-z]/, "Password must contain at least one lowercase letter")
       .matches(/[0-9]/, "Password must contain at least one number")
-      .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
+      .matches(
+        /[@$!%*?&]/,
+        "Password must contain at least one special character"
+      ),
   });
 
   const currentSchema = isLogin ? loginSchema : signupSchema;
@@ -82,47 +89,60 @@ import Clouds from "../../assets/Clouds.png";
       setIsValid((prev) => ({ ...prev, [name]: false }));
     }
   };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        setLoading(true);
-        await currentSchema.validate(formData, { abortEarly: false });
-        setErrors({});
-        const action = isLogin ? LoginAction : SignupAction;
-        const response = await action(formData);
-  
-        localStorage.setItem("hasSignedUp", "true");
-  
-        if (response.status >= 200 && response.status < 300) {
-          toast.success(isLogin ? "Login successful" : "Signup successful");
-          if (isLogin) {
-            // Redirect to the dashboard after successful login
-            navigate("/dashboard"); // Ensure "/dashboard" is the correct path
-          } else {
-            setPopupMessage("Check your email address for verification.");
-          }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await currentSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+      const action = isLogin ? LoginAction : SignupAction;
+      const response = await action(formData);
+
+      // Assuming the response contains the token
+      const token = response.data.token;
+
+      // Store the token in localStorage
+      localStorage.setItem("authToken",(token));
+
+      localStorage.setItem("hasSignedUp", "true");
+
+      const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        navigate("/login"); // Redirect to login page
+        toast.success("You have been logged out.");
+      };
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log(response);
+        toast.success(isLogin ? "Login successful" : "Signup successful");
+        if (isLogin) {
+          // Redirect to the dashboard after successful login
+          navigate("/dashboard"); // Ensure "/dashboard" is the correct path
         } else {
-          toast.error("Unexpected response. Please try again.");
+          setPopupMessage("Check your email address for verification.");
         }
-      } catch (err) {
-        if (err.name === "ValidationError") {
-          const validationErrors = {};
-          err.inner.forEach((error) => {
-            validationErrors[error.path || "unknown"] = error.message;
-          });
-          setErrors(validationErrors);
-        } else if (err.response) {
-          console.error("API Error:", err.response.data);
-          toast.error(err.response.data.message || "Something went wrong!");
-        } else {
-          console.error("Unexpected Error:", err);
-          toast.error("An unexpected error occurred. Please try again.");
-        }
-      } finally {
-        setLoading(false);
+      } else {
+        toast.error("Unexpected response. Please try again.");
       }
-    };
+    } catch (err) {
+      if (err.name === "ValidationError") {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          validationErrors[error.path || "unknown"] = error.message;
+        });
+        setErrors(validationErrors);
+      } else if (err.response) {
+        console.error("API Error:", err.response.data);
+        toast.error(err.response.data.message || "Something went wrong!");
+      } else {
+        console.error("Unexpected Error:", err);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ErrorBoundary>
@@ -154,7 +174,9 @@ import Clouds from "../../assets/Clouds.png";
                   setErrors({});
                 }}
                 className={`w-1/2 py-2 text-sm md:text-base font-bold rounded-l-lg ${
-                  isLogin ? "bg-[#C83AA7] text-white" : "bg-white text-[#242424]"
+                  isLogin
+                    ? "bg-[#C83AA7] text-white"
+                    : "bg-white text-[#242424]"
                 }`}
               >
                 Login
@@ -165,7 +187,9 @@ import Clouds from "../../assets/Clouds.png";
                   setErrors({});
                 }}
                 className={`w-1/2 py-2 text-sm md:text-base font-bold rounded-r-lg ${
-                  isLogin ? "bg-white text-[#242424]" : "bg-[#C83AA7] text-white"
+                  isLogin
+                    ? "bg-white text-[#242424]"
+                    : "bg-[#C83AA7] text-white"
                 }`}
               >
                 Sign Up
@@ -232,7 +256,11 @@ import Clouds from "../../assets/Clouds.png";
           </div>
         </div>
         <div className="w-full lg:w-1/2 hidden lg:block relative bg-gray-100">
-          <img src={Clouds} alt="Clouds" className="w-full h-full object-cover" />
+          <img
+            src={Clouds}
+            alt="Clouds"
+            className="w-full h-full object-cover"
+          />
         </div>
         <style>
           {`
@@ -301,11 +329,17 @@ const InputField = ({
   showPassword,
 }) => (
   <div className="mb-4">
-    <label className="block font-medium mb-2 text-sm md:text-base">{label}:</label>
+    <label className="block font-medium mb-2 text-sm md:text-base">
+      {label}:
+    </label>
     <div className="relative">
       <input
         className={`w-full px-4 py-2 text-sm md:text-base rounded border text-gray-900 bg-white ${
-          error ? "border-red-500" : isValid ? "border-green-500" : "border-gray-300"
+          error
+            ? "border-red-500"
+            : isValid
+            ? "border-green-500"
+            : "border-gray-300"
         }`}
         name={name}
         type={type}

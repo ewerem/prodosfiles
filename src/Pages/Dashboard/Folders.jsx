@@ -163,21 +163,218 @@
 
 // export default Folders;
 
+// import React, { useState, useEffect } from "react";
+// import folderIcon from "../../assets/folder.png";
+// import userIcon from "../../assets/user.png";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import Apikit from "../../Base/Apikit"; // Make sure Apikit is properly configured to handle API requests
+
+// const Folders = () => {
+//   const [folders, setFolders] = useState([]);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [token, setToken] = useState(null);
+
+//   // Fetch the token from localStorage
+//   useEffect(() => {
+//     const storedToken = localStorage.getItem("token");
+//     if (storedToken) {
+//       setToken(storedToken);
+//     } else {
+//       toast.error("Authentication token not found.");
+//     }
+//   }, []);
+
+//   // Fetch folders from the API
+//   const fetchFolders = async () => {
+//     if (!token) {
+//       toast.error("You must be logged in to fetch folders.");
+//       return;
+//     }
+
+//     setIsLoading(true);
+
+//     try {
+//       const response = await Apikit("GetFolderAction", {
+//         method: "GET",
+//         headers: {
+//           "accept": "*/*",
+//           "Authorization": `Bearer ${token}`, // Pass the token in the Authorization header
+//         },
+//       });
+
+//       if (response.status === 200) {
+//         setFolders(response.data.folders || []); // Update folders with data from API
+//         toast.success("Folders loaded successfully!", {
+//           position: "top-center",
+//           autoClose: 3000,
+//         });
+//       } else {
+//         toast.error("Failed to load folders. Please try again.", {
+//           position: "top-center",
+//           autoClose: 3000,
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error fetching folders:", error);
+//       const errorMessage =
+//         error.response?.data?.message || "An error occurred while fetching folders.";
+//       toast.error(errorMessage, {
+//         position: "top-center",
+//         autoClose: 3000,
+//       });
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   // Fetch folders on component mount
+//   useEffect(() => {
+//     if (token) {
+//       fetchFolders(); // Fetch folders when the token is available
+//     }
+//   }, [token]);
+
+//   const removeFolder = (id) => {
+//     setFolders((prevFolders) =>
+//       prevFolders.filter((folder) => folder.id !== id)
+//     );
+//   };
+
+//   const shareFolder = (folder) => {
+//     const shareData = {
+//       title: folder.name,
+//       text: `Check out this folder: ${folder.name}, last modified on ${folder.modified}, size: ${folder.size}`,
+//       url: `https://example.com/folders/${folder.id}`, // Replace with your folder's actual URL
+//     };
+
+//     if (navigator.share) {
+//       navigator
+//         .share(shareData)
+//         .then(() => toast.success("Folder shared successfully!"))
+//         .catch((error) => toast.error("Error sharing folder: " + error.message));
+//     } else {
+//       // Fallback for unsupported browsers
+//       navigator.clipboard
+//         .writeText(shareData.url)
+//         .then(() => toast.info("Link copied to clipboard!"))
+//         .catch((error) => toast.error("Error copying link: " + error.message));
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <ToastContainer />
+//       <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px] mt-[45px]">
+//         {/* Header Section */}
+//         <div className="grid grid-cols-6 gap-[16px] px-[18px] mt-[24px]">
+//           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
+//             Name
+//           </h3>
+//           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
+//             Modified
+//           </h3>
+//           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
+//             Shared With
+//           </h3>
+//           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
+//             Size
+//           </h3>
+//           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
+//             Share
+//           </h3>
+//           <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
+//             Delete
+//           </h3>
+//         </div>
+
+//         <hr className="mt-[18px]" />
+
+//         {/* Rows Section */}
+//         {isLoading ? (
+//           <p>Loading...</p>
+//         ) : folders.length > 0 ? (
+//           folders.map((folder) => (
+//             <div
+//               key={folder.id}
+//               className="grid grid-cols-6 gap-[16px] px-[18px] mt-[13px] items-center"
+//             >
+//               {/* Name Column */}
+//               <div className="flex items-center gap-1 pr-[30px]">
+//                 <img
+//                   className="w-[15px] h-[10px] object-contain"
+//                   src={folderIcon}
+//                   alt="Folder Icon"
+//                 />
+//                 <h3 className="font-[Poppins] text-[#7E838B] font-normal text-[10px]">
+//                   {folder.name}
+//                 </h3>
+//               </div>
+
+//               {/* Modified Date Column */}
+//               <h3 className="font-[Poppins] font-normal text-[10px] text-[#7E838B]">
+//                 {folder.modified}
+//               </h3>
+
+//               {/* Shared With Column */}
+//               <div>
+//                 <img
+//                   className="w-[15px] h-[15px] object-contain"
+//                   src={userIcon}
+//                   alt="User Icon"
+//                 />
+//               </div>
+
+//               {/* Size Column */}
+//               <h3 className="font-[Poppins] font-normal text-[10px] text-[#7E838B]">
+//                 {folder.size}
+//               </h3>
+
+//               {/* Share Button */}
+//               <button
+//                 className="bg-blue-500 text-white px-2 py-1 rounded text-[10px] font-medium"
+//                 onClick={() => shareFolder(folder)}
+//               >
+//                 Share
+//               </button>
+
+//               {/* Delete Button */}
+//               <button
+//                 className="text-red-500 text-[10px] font-medium mr-[20px] lg:mr-[125px]"
+//                 onClick={() => removeFolder(folder.id)}
+//               >
+//                 Remove
+//               </button>
+//             </div>
+//           ))
+//         ) : (
+//           <p className="text-[#7E838B] text-[10px] text-center mt-4">
+//             No folders available.
+//           </p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Folders;
+
+
 import React, { useState, useEffect } from "react";
 import folderIcon from "../../assets/folder.png";
 import userIcon from "../../assets/user.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Apikit from "../../Base/Apikit"; // Make sure Apikit is properly configured to handle API requests
+import Apikit from "../../Base/Apikit"; // Ensure Apikit is correctly configured
 
 const Folders = () => {
   const [folders, setFolders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(null);
 
-  // Fetch the token from localStorage
+  // Retrieve token from localStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("authToken");
     if (storedToken) {
       setToken(storedToken);
     } else {
@@ -195,50 +392,38 @@ const Folders = () => {
     setIsLoading(true);
 
     try {
-      const response = await Apikit("GetFolderAction", {
+      const response = await fetch(
+        "https://proodoosfiles.onrender.com/api/all-folders/",
+         {
         method: "GET",
         headers: {
-          "accept": "*/*",
-          "Authorization": `Bearer ${token}`, // Pass the token in the Authorization header
+          Accept: "*/*",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
-        setFolders(response.data.folders || []); // Update folders with data from API
-        toast.success("Folders loaded successfully!", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        setFolders(response.data.folders || []);
+        toast.success("Folders loaded successfully!");
       } else {
-        toast.error("Failed to load folders. Please try again.", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        toast.error("Failed to load folders. Please try again.");
       }
     } catch (error) {
       console.error("Error fetching folders:", error);
-      const errorMessage =
-        error.response?.data?.message || "An error occurred while fetching folders.";
-      toast.error(errorMessage, {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      toast.error(
+        error.response?.data?.message || "An error occurred while fetching folders."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch folders on component mount
   useEffect(() => {
-    if (token) {
-      fetchFolders(); // Fetch folders when the token is available
-    }
+    if (token) fetchFolders();
   }, [token]);
 
   const removeFolder = (id) => {
-    setFolders((prevFolders) =>
-      prevFolders.filter((folder) => folder.id !== id)
-    );
+    setFolders((prevFolders) => prevFolders.filter((folder) => folder.id !== id));
   };
 
   const shareFolder = (folder) => {
@@ -254,7 +439,6 @@ const Folders = () => {
         .then(() => toast.success("Folder shared successfully!"))
         .catch((error) => toast.error("Error sharing folder: " + error.message));
     } else {
-      // Fallback for unsupported browsers
       navigator.clipboard
         .writeText(shareData.url)
         .then(() => toast.info("Link copied to clipboard!"))
@@ -262,91 +446,70 @@ const Folders = () => {
     }
   };
 
+  const FolderRow = ({ folder }) => (
+    <div
+      key={folder.id}
+      className="grid grid-cols-6 gap-[16px] px-[18px] mt-[13px] items-center"
+    >
+      <div className="flex items-center gap-1 pr-[30px]">
+        <img
+          className="w-[15px] h-[10px] object-contain"
+          src={folderIcon}
+          alt="Folder Icon"
+        />
+        <h3 className="font-[Poppins] text-[#7E838B] font-normal text-[10px]">
+          {folder.name}
+        </h3>
+      </div>
+      <h3 className="font-[Poppins] font-normal text-[10px] text-[#7E838B]">
+        {folder.modified}
+      </h3>
+      <div>
+        <img
+          className="w-[15px] h-[15px] object-contain"
+          src={userIcon}
+          alt="User Icon"
+        />
+      </div>
+      <h3 className="font-[Poppins] font-normal text-[10px] text-[#7E838B]">
+        {folder.size}
+      </h3>
+      <button
+        className="bg-blue-500 text-white px-2 py-1 rounded text-[10px] font-medium"
+        onClick={() => shareFolder(folder)}
+      >
+        Share
+      </button>
+      <button
+        className="text-red-500 text-[10px] font-medium mr-[20px] lg:mr-[125px]"
+        onClick={() => removeFolder(folder.id)}
+      >
+        Remove
+      </button>
+    </div>
+  );
+
   return (
     <div>
       <ToastContainer />
       <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px] mt-[45px]">
-        {/* Header Section */}
         <div className="grid grid-cols-6 gap-[16px] px-[18px] mt-[24px]">
-          <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
-            Name
-          </h3>
-          <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
-            Modified
-          </h3>
-          <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
-            Shared With
-          </h3>
-          <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
-            Size
-          </h3>
-          <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
-            Share
-          </h3>
-          <h3 className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left">
-            Delete
-          </h3>
+          {["Name", "Modified", "Shared With", "Size", "Share", "Delete"].map(
+            (header) => (
+              <h3
+                key={header}
+                className="font-[Poppins] text-[#7E838B] text-[10px] font-normal text-left"
+              >
+                {header}
+              </h3>
+            )
+          )}
         </div>
-
         <hr className="mt-[18px]" />
-
-        {/* Rows Section */}
         {isLoading ? (
-          <p>Loading...</p>
+          <p className="text-center mt-4">Loading...</p>
         ) : folders.length > 0 ? (
-          folders.map((folder) => (
-            <div
-              key={folder.id}
-              className="grid grid-cols-6 gap-[16px] px-[18px] mt-[13px] items-center"
-            >
-              {/* Name Column */}
-              <div className="flex items-center gap-1 pr-[30px]">
-                <img
-                  className="w-[15px] h-[10px] object-contain"
-                  src={folderIcon}
-                  alt="Folder Icon"
-                />
-                <h3 className="font-[Poppins] text-[#7E838B] font-normal text-[10px]">
-                  {folder.name}
-                </h3>
-              </div>
-
-              {/* Modified Date Column */}
-              <h3 className="font-[Poppins] font-normal text-[10px] text-[#7E838B]">
-                {folder.modified}
-              </h3>
-
-              {/* Shared With Column */}
-              <div>
-                <img
-                  className="w-[15px] h-[15px] object-contain"
-                  src={userIcon}
-                  alt="User Icon"
-                />
-              </div>
-
-              {/* Size Column */}
-              <h3 className="font-[Poppins] font-normal text-[10px] text-[#7E838B]">
-                {folder.size}
-              </h3>
-
-              {/* Share Button */}
-              <button
-                className="bg-blue-500 text-white px-2 py-1 rounded text-[10px] font-medium"
-                onClick={() => shareFolder(folder)}
-              >
-                Share
-              </button>
-
-              {/* Delete Button */}
-              <button
-                className="text-red-500 text-[10px] font-medium mr-[20px] lg:mr-[125px]"
-                onClick={() => removeFolder(folder.id)}
-              >
-                Remove
-              </button>
-            </div>
-          ))
+          folders.map((folder) => <FolderRow key={folder.id} folder={folder} />)
         ) : (
           <p className="text-[#7E838B] text-[10px] text-center mt-4">
             No folders available.

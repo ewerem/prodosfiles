@@ -68,7 +68,7 @@ const handleUpload = async () => {
     setUploadStatus("Uploading...");
 
     // Retrieve CSRF token and authentication token from storage or context
-    const csrfToken = "g"; // Replace with dynamic retrieval
+    const csrfToken = ""; // Replace with dynamic retrieval
     const authToken = localStorage.getItem("authToken"); // Assuming the auth token is stored in localStorage
 
     const response = await axios.post(
