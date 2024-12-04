@@ -170,9 +170,21 @@ import AddFolder from "../../assets/AddFolder.png";
 import LogoutRounded from "../../assets/LogoutRounded.png";
 import close from "../../assets/close.png";
 import Apikit from "../../Base/Apikit";
+import { useNavigate } from "react-router-dom";
 
 
 const Starred = () => {
+  
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("authToken"); // Remove token (or adjust based on auth implementation)
+    navigate("/login"); // Redirect to login page
+  };
+
+  const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -307,7 +319,7 @@ const Starred = () => {
               </div>
             </Link>
 
-            <Link to="/Logout">
+            {/* <Link to="/Logout">
               <div className="flex ml-[16px] mt-[25px]">
                 <img
                   className="object-contain cursor-pointer"
@@ -318,7 +330,21 @@ const Starred = () => {
                   Logout
                 </h3>
               </div>
-            </Link>
+            </Link> */}
+
+             <div
+              className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200 cursor-pointer"
+              onClick={() => setShowConfirm(true)} // Open confirmation modal
+            >
+              <img
+                className="object-contain"
+                src={LogoutRounded}
+                alt="Logout"
+              />
+              <h3 className="text-[#242424] font-[Poppins] text-sm font-normal">
+                Logout
+              </h3>
+            </div>
           </div>
         </div>
       ) : null}
@@ -341,7 +367,33 @@ const Starred = () => {
           </div>
         ))}
       </div>
-    </div>
+            {/* Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
+            <p className="mb-6 text-gray-600">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          </div>
+      
+      )}
+      </div>
   );
 };
 
