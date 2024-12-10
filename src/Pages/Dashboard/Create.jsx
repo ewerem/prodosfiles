@@ -55,7 +55,7 @@ const Create = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Corrected template string
+            Authorization: `Token ${token}`, // Corrected template string
           },
           body: JSON.stringify({
             folder_name: folderName,

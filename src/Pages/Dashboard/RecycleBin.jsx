@@ -83,7 +83,7 @@ const RecycleBin = () => {
         headers: {
           "Content-Type": "application/json",
           // "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // Assuming CSRF token is static or comes from another source
-          "Authorization": `Bearer ${token}`, // Pass the token in the Authorization header
+          "Authorization": `Token ${token}`, // Pass the token in the Authorization header
         },
         body: JSON.stringify({ file_id }),
       });

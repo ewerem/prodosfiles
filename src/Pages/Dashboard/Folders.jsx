@@ -62,7 +62,7 @@ const Folders = () => {
         method: "GET",
         headers: {
           Accept: "*/*",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Token ${token}`,
         },
       });
 
