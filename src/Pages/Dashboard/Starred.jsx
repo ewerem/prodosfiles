@@ -159,11 +159,7 @@ const Starred = () => {
               </div>
             </Link>
 
-<<<<<<< HEAD
-            <Link to="/Logout">
-=======
             {/* <Link to="/Logout">
->>>>>>> 0058c0049cfff3030fd2718d3f3d7e7734dc6cae
               <div className="flex ml-[16px] mt-[25px]">
                 <img
                   className="object-contain cursor-pointer"
