@@ -1258,20 +1258,28 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Features */}
+     
       <div className=" ml-[14%] md:ml-[50%]  lg:flex lg:justify-evenly lg:items-center lg:ml-[250px] lg:mt-[24px]">
+      <Link to= "/folders">
         <div className=" border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <img className="mx-auto" src={folder} alt="All Folders" />
           <p className="mt-[11.47px] text-center">All Folders</p>
         </div>
+        </Link>
+        <Link to= "/starred">
         <div className="border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <img className="mx-auto" src={starred} alt="Starred" />
           <p className="mt-[11.47px] text-center">Starred</p>
         </div>
+        </Link>
+        <Link to="">
         <div className="border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <img src={upload} alt="Upload" className="w-[40px] h-[40px] mb-[10px]" />
           <p className="text-center">Upload File</p>
         </div>
+        </Link>
       </div>
+      
 
       {/* File List */}
       <div className="w-[85%] h-[286px] lg:w-[72%] border-[#EAEAEA] border md:w-[60%] md:ml-[39%] ml-[24px] lg:ml-[300px] mt-[30px]">
