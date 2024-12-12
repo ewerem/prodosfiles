@@ -1,8 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Menu from '../../assets/Menu.png'
 import unsplash from '../../assets/unsplash.png'
+import { useNavigate } from 'react-router-dom'
 
 const Success = () => {
+    const navigate = useNavigate();
+    const urlParams = new URLSearchParams(window.location.search);
+  const user_id = urlParams.get("u_info");
+    const decodedInfo = JSON.parse(user_id.replace(/'/g, '"'));
+    const token = decodedInfo.token;
+    const uidb64 = decodedInfo.u_id;
+    const value = { token, uidb64 };
+
+  useEffect(()=>{
+    axios.post(`https://proodoosfiles.onrender.com/api/verify`, value)
+    .then(res => {
+        console.log(res);
+        navigate('/login')
+    })
+    .catch(err => {
+        console.log(err);
+    })
+
+  }, [])
+
+  console.log(user_id);
+  
+
   return (
     <div className=' w-full h-screen'>
    
