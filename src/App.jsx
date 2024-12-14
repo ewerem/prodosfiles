@@ -61,6 +61,7 @@ import RecycleBin from './Pages/Dashboard/RecycleBin';
 import Folders from './Pages/Dashboard/Folders';
 import Sidebar from './Components/Sidebar';
 import Logout from './Pages/Dashboard/Logout';
+import Success from './Pages/Auth/Success';
 
 function App() {
   const location = useLocation();
@@ -91,6 +92,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/resetpassword" element={<Resetpassword />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="/success" element={<Success/>} />
         
         {/* Dashboard routes */}
         <Route path="/dashboard" element={<Dashboard />} />

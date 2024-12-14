@@ -45,8 +45,23 @@ const Starred = () => {
 
     try {
       // Make API call
+      const token = localStorage.getItem("authToken");
+
+      // Check if token exists
+    if (!token) {
+      alert("Authentication token not found.");
+      return; // Exit if there's no token
+    }
+
       const updatedFolder = { id: folder.id, isStarred: !folder.isStarred };
-       await Apikit("/starred-f/", updatedFolder);
+       await Apikit("/starred-f/", updatedFolder,{
+        method: "GET",  // Or GET based on your endpoint's requirement
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`,  // Add token here
+        },
+         body: JSON.stringify(updatedFolder), 
+       });
 
       // Update UI
       setFolders((prevFolders) =>

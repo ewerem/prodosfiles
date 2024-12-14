@@ -46,41 +46,82 @@ const Folders = () => {
     }
   }, []);
 
-  // Fetch folders from the API
+  // // Fetch folders from the API
+  // const fetchFolders = async () => {
+  //   if (!token) {
+  //     toast.error("You must be logged in to fetch folders.");
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+
+  //   try {
+  //     const response = await fetch(
+  //       "https://proodoosfiles.onrender.com/api/all-folders/",
+  //        {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "*/*",
+  //         Authorization: `Token ${token}`,
+  //       },
+  //     });
+
+  //     if (response.status === 200) {
+  //       setFolders(response.data.folders || []);
+  //       toast.success("Folders loaded successfully!");
+  //     } else {
+  //       toast.error("Failed to load folders. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching folders:", error);
+  //     toast.error(
+  //       error.response?.data?.message || "An error occurred while fetching folders."
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const fetchFolders = async () => {
     if (!token) {
       toast.error("You must be logged in to fetch folders.");
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
       const response = await fetch(
         "https://proodoosfiles.onrender.com/api/all-folders/",
-         {
-        method: "GET",
-        headers: {
-          Accept: "*/*",
-          Authorization: `Token ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        setFolders(response.data.folders || []);
+        {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+  
+      if (response.ok) {
+        const data = await response.json(); // Parse the JSON response
+        setFolders(data || []); // Use the actual structure of your API's response
         toast.success("Folders loaded successfully!");
+        console.log("API Response:", data)
       } else {
-        toast.error("Failed to load folders. Please try again.");
+        const errorData = await response.json(); // Parse error response
+        toast.error(errorData.message || "Failed to load folders. Please try again.");
       }
     } catch (error) {
       console.error("Error fetching folders:", error);
-      toast.error(
-        error.response?.data?.message || "An error occurred while fetching folders."
-      );
+      toast.error("An error occurred while fetching folders.");
     } finally {
       setIsLoading(false);
     }
   };
+    console.log(setFolders);
+  
+
+
 
   useEffect(() => {
     if (token) fetchFolders();

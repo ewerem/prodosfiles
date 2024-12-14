@@ -1113,8 +1113,11 @@ import Rating from "../../assets/Rating.png";
 import Disposal from "../../assets/Disposal.png";
 import AddFolder from "../../assets/AddFolder.png";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
+  const [token, setToken] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -1129,11 +1132,31 @@ const Dashboard = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
 
+  // useEffect(() => {
+  //   const storedToken = localStorage.getItem("authToken");
+  //   if (storedToken) {
+  //     setToken(storedToken);
+  //   } else {
+  //     toast.error("Authentication token not found.");
+  //     navigate("/login"); // Redirect to login if no token
+  //   }
+  // }, [navigate]);
+
+
 
   const handleLogout = () => {
     localStorage.removeItem("authToken"); // Remove token (or adjust based on auth implementation)
     navigate("/login"); // Redirect to login page
   };
+
+  // useEffect(() => {
+  //     const storedToken = localStorage.getItem("authToken");    
+  //     if (storedToken) {
+  //       setToken(storedToken);
+  //     } else {
+  //       toast.error("Authentication token not found.");
+  //     }
+  //   }, []);
 
   const navigate = useNavigate();
 
@@ -1147,6 +1170,13 @@ const Dashboard = () => {
       alert("Please enter a valid user to share with.");
       return;
     }
+    if (!token) {
+      toast.error("You must be logged in to share.");
+      return; // Stop execution if there's no token
+    } else {
+      toast.success("Shared successfully");
+    }
+    
 
     const updatedFiles = files.map((file) =>
       file.id === shareModal.fileId
@@ -1159,16 +1189,27 @@ const Dashboard = () => {
     setShareWith("");
 
     try {
-      await axios.post(`/api/share`, {
-        fileId: shareModal.fileId,
-        shareWith,
-      });
+      await axios.post(
+        'https://proodoosfiles.onrender.com/api/fo/sharing/',
+        {
+          fileId: shareModal.fileId,
+          shareWith
+        },
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Token ${token}`,
+            'X-CSRFTOKEN': '52IsgIkb4OzvOAq95OoBRwunO2oVV47aSGfm2N0p6hWbhzK0Sj9uYlLKgAi4WVCQ'
+          }
+        }
+      );
+    
       alert("Folder shared successfully!");
     } catch (error) {
       console.error("Error sharing folder:", error);
     }
   };
-
+    
   const handleRemove = (fileId) => {
     const updatedFiles = files.filter((file) => file.id !== fileId);
     setFiles(updatedFiles);
@@ -1197,8 +1238,8 @@ const Dashboard = () => {
 
   return (
     <div>
-
-<div className="flex justify-between items-center mt-[29px] lg:hidden">
+          <ToastContainer />
+       <div className="flex justify-between items-center mt-[29px] lg:hidden">
         <p className="font-[Poppins] text-[#773DD3] text-base font-extrabold ml-[22px]">
           Prodoos<span className="font-light">Files</span>
         </p>
@@ -1258,20 +1299,28 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Features */}
+     
       <div className=" ml-[14%] md:ml-[50%]  lg:flex lg:justify-evenly lg:items-center lg:ml-[250px] lg:mt-[24px]">
+      <Link to= "/folders">
         <div className=" border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <img className="mx-auto" src={folder} alt="All Folders" />
           <p className="mt-[11.47px] text-center">All Folders</p>
         </div>
+        </Link>
+        <Link to= "/starred">
         <div className="border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <img className="mx-auto" src={starred} alt="Starred" />
           <p className="mt-[11.47px] text-center">Starred</p>
         </div>
+        </Link>
+        <Link to="">
         <div className="border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <img src={upload} alt="Upload" className="w-[40px] h-[40px] mb-[10px]" />
           <p className="text-center">Upload File</p>
         </div>
+        </Link>
       </div>
+      
 
       {/* File List */}
       <div className="w-[85%] h-[286px] lg:w-[72%] border-[#EAEAEA] border md:w-[60%] md:ml-[39%] ml-[24px] lg:ml-[300px] mt-[30px]">
@@ -1424,4 +1473,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
