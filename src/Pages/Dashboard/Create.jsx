@@ -60,7 +60,7 @@ const Create = () => {
           body: JSON.stringify({
             // folder_name: "String",
             folder_name: folderName.trim(),
-            parent_folder_id: parentFolderId, // Add parent folder ID
+            parent_folder_id: selectedParentId, // Add parent folder ID
 
           }),
         }
