@@ -40,6 +40,10 @@ const RecycleBin = () => {
     { id: 2, file_id: "2fa75f64-5717-4562-b3fc-2c963f66afa7", name: "Image 2", deletedAt: "2024-11-24" },
     { id: 3, file_id: "1fa65f64-5717-4562-b3fc-2c963f66afa8", name: "Video 3", deletedAt: "2024-11-23" },
   ]);
+      
+     
+
+
 
   // State to manage authentication token
   const [token, setToken] = useState();
@@ -62,34 +66,139 @@ const RecycleBin = () => {
 
 
   // Function to restore an item (local operation)
-  const restoreItem = (id) => {
-    setRecycleBinItems((prevItems) =>
-      prevItems.filter((item) => item.id !== id)
-    );
-    alert(`Item ${id} restored successfully.`);
-  };
+  // const restoreItem = (id) => {
+  //   setRecycleBinItems((prevItems) =>
+  //     prevItems.filter((item) => item.id !== id)
+  //   );
+  //   alert(`Item ${id} restored successfully.`);
+  // };
 
-  // Function to permanently delete an item (API call)
-  const deleteItemPermanently = async (file_id, id) => {
+  // // Function to permanently delete an item (API call)
+  // const deleteItemPermanently = async (file_id, id) => {
+  //   if (!token) {
+  //     toast.error("You must be logged in to delete items.");
+  //     return;
+  //   }
+
+
+    
+  //   try {
+  //     // Make the POST request to permanently delete the item
+  //     const response = await fetch("https://proodoosfiles.onrender.com/api/fi/bin/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //          "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // Assuming CSRF token is static or comes from another source
+  //         "Authorization": `Token ${token}`, // Pass the token in the Authorization header
+  //       },
+  //       body: JSON.stringify({ file_id }),
+  //     });
+
+
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       // Successfully deleted, now update the UI
+  //       setRecycleBinItems((prevItems) =>
+  //         prevItems.filter((item) => item.id !== id)
+  //       );
+  //       toast.success(`Item ${file_id} deleted permanently.`, {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //       });
+  //     } else {
+  //       toast.error(`Failed to delete item ${file_id}. ${data.detail || "Please try again."}`, {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting item:", error);
+  //     toast.error("An error occurred while deleting the item.", {
+  //       position: "top-center",
+  //       autoClose: 3000,
+  //     });
+  //   }
+  // };
+
+  // Function to restore an item (API operation)
+const restoreItem = async (id) => {
+  if (!token) {
+    toast.error("You must be logged in to restore items.");
+    return;
+  }
+
+  try {
+    // Find the item from the recycle bin list based on its id
+    const item = recycleBinItems.find((item) => item.id === id);
+
+    // Ensure the item exists
+    if (!item) {
+      toast.error("Item not found.");
+      return;
+    }
+
+    // Make the POST request to restore the item from the recycle bin
+    const response = await fetch("https://proodoosfiles.onrender.com/api/fo/bin/", {
+      method: "POST", // Use POST to restore
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`, // Pass the token in the Authorization header
+        "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // CSRF token
+      },
+      body: JSON.stringify({ file_id: item.file_id }), // Send the file_id to restore the item
+    });
+  
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Successfully restored, now update the UI
+      setRecycleBinItems((prevItems) =>
+        prevItems.filter((item) => item.id !== id)
+      );
+      toast.success(`Item ${item.name} restored successfully.`, {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } else {
+      toast.error(`Failed to restore item ${item.name}. ${data.detail || "Please try again."}`, {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    }
+  } catch (error) {
+    console.error("Error restoring item:", error);
+    toast.error("An error occurred while restoring the item.", {
+      position: "top-center",
+      autoClose: 3000,
+    });
+  }
+};
+
+
+
+  const deleteItemPermanently = async (file_id, folder_id, id) => {
     if (!token) {
       toast.error("You must be logged in to delete items.");
       return;
     }
-
+  
     try {
       // Make the POST request to permanently delete the item
-      const response = await fetch("https://proodoosfiles.onrender.com/api/fi/bin/", {
-        method: "POST",
+      const response = await fetch("https://proodoosfiles.onrender.com/api/fo/del/", {
+        method: "POST", // Use POST for deletion
         headers: {
-          "Content-Type": "application/json",
-          // "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // Assuming CSRF token is static or comes from another source
+          "Content-Type": "application/json", 
           "Authorization": `Token ${token}`, // Pass the token in the Authorization header
+          "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // CSRF token
         },
-        body: JSON.stringify({ file_id }),
+        body: JSON.stringify({ file_id, folder_id }), // Send both file_id and folder_id in the body
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         // Successfully deleted, now update the UI
         setRecycleBinItems((prevItems) =>
@@ -113,7 +222,7 @@ const RecycleBin = () => {
       });
     }
   };
-
+  
   return (
     <div className="p-4">
       <ToastContainer />
