@@ -54,7 +54,8 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import Login from './Pages/Auth/Login';
 import Resetpassword from './Pages/Auth/Resetpassword';
 import Verify from './Pages/Auth/Verify';
-import Dashboard from './Pages/Dashboard/Dashboard';
+// import Dashboard from './Pages/Dashboard/Dashboard';
+import Dashboard from '../src/Pages/Dashboard/Dashboard';
 import Create from './Pages/Dashboard/Create';
 import Starred from './Pages/Dashboard/Starred';
 import RecycleBin from './Pages/Dashboard/RecycleBin';
