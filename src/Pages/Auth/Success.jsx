@@ -28,6 +28,15 @@ const Success = () => {
     console.error("Error decoding or parsing user_id:", error);
   }
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");    
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      toast.error("Authentication token not found.");
+    }
+  }, []);
+
   // Extract token and u_id safely
   const token = decodedInfo?.token || null;
   const uidb64 = decodedInfo?.u_id || null;
@@ -46,6 +55,13 @@ const Success = () => {
       return;
     }
 
+     // Store the token and uidb64 in localStorage if valid
+         localStorage.setItem("authToken", token);
+         localStorage.setItem("userId", uidb64);
+
+           console.log(authToken);
+           console.log(uidb64);
+
     const verifyAccount = async () => {
       try {
         const response = await axios.post(`https://proodoosfiles.onrender.com/api/verify/`, {
@@ -61,6 +77,8 @@ const Success = () => {
 
     verifyAccount();
   }, [token, uidb64, navigate]);
+
+      
 
   if (!decodedInfo) {
     return (
