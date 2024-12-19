@@ -49,6 +49,8 @@
 
 // export default App;
 
+// Dashboard
+
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './Pages/Auth/Login';
