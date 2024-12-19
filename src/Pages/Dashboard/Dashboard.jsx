@@ -56,6 +56,7 @@ const Dashboard = () => {
 
     try {
       await axios.post(
+        // 'https://proodoosfiles.onrender.com/api/fo/sharing/',
           'https://proodoosfiles.onrender.com/api/share-file/',
         { fileId: shareModal.fileId, shareWith },
         {
@@ -76,7 +77,65 @@ const Dashboard = () => {
     setFiles(updatedFiles);
     toast.success("File removed successfully");
   };
+
+  // const handleFolderUpload = (event) => {
+  //   const folderFiles = event.target.files;
+  //   console.log(folderFiles);
+    
+
+  //   const uploadedFiles = Array.from(folderFiles).map((file, index) => ({
+  //     id: files.length + index + 1,
+  //     name: file.webkitRelativePath || file.name,
+  //     modified: new Date().toLocaleDateString(),
+  //     sharedWith: [],
+  //     size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+  //   }));
+
+  //   setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
+  //   toast.success("Folder uploaded successfully!");
+
+  //   if (!token) {
+  //         toast.error("Authentication token is missing.");
+  //         return;
+  //       }
+    
+  //       // setIsLoading(true);
+        
+  //       try {
+  //         const response = fetch(
+  //           "https://proodoosfiles.onrender.com/api/upload_file/",
+  //           {
+  //             method: "POST",
+  //             headers: {
+  //               "Content-Type": "multipart/form-data",
+  //               Authorization: `Token ${token}`,
+  //             },
+  //             body: 
+  //               folderFiles
+  //           }
+  //         );
+    
+  //         const data = response.json();
+  //         console.log(data);
+          
+  //         if (!response.ok) {
+  //           const errorMessage =
+  //             data.message || `Failed with status code ${response.status}`;
+  //           throw new Error(errorMessage);
+  //         }
+    
+  //         toast.success("Folder created successfully!");
+  //         setFolderName("");
+  //       } catch (error) {
+  //         console.error("Error during folder creation:", error);
+  //         toast.error(error.message || "An unexpected error occurred.");
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
  
+
+
   const handleFolderUpload = async (event) => {
     const folderFiles = event.target.files;
   
@@ -246,7 +305,6 @@ const Dashboard = () => {
             onChange={handleFolderUpload}
           />
         </div>
-
       </div>
 
       {/* File List */}
