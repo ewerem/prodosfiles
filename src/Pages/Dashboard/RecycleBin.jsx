@@ -403,24 +403,182 @@
 // export default RecycleBin;
 
 
+// import React, { useState, useEffect } from "react";
+// import { ToastContainer, toast } from "react-toastify";
+// import menuvector from "../../assets/menuvector.png";
+// import close from "../../assets/close.png";
+// import LogoutRounded from "../../assets/LogoutRounded.png";
+// import Home from "../../assets/Home.png";
+// import Rating from "../../assets/Rating.png";
+// import Disposal from "../../assets/Disposal.png";
+// import AddFolder from "../../assets/AddFolder.png";
+
+// import { Link } from "react-router-dom";
+// import "react-toastify/dist/ReactToastify.css";
+// import { useNavigate } from "react-router-dom";
+// import Folders from "./Folders";
+
+// const RecycleBin = () => {
+//   const [recycleBinItems, setRecycleBinItems] = useState([]);
+//   const [getBinnedFiles, setGetBinnedFiles] = useState([]); // Integrated GET request state
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+//   const [token, setToken] = useState();
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const storedToken = localStorage.getItem("authToken");
+//     if (storedToken) {
+//       setToken(storedToken);
+//       fetchRecycleBinItems(storedToken); // POST Request
+//       fetchBinnedFiles(storedToken); // GET Request
+//     } else {
+//       toast.error("Authentication token not found.");
+//     }
+//   }, []);
+
+//   const fetchRecycleBinItems = async (authToken) => {
+//     try {
+//       const response = await fetch("https://proodoosfiles.onrender.com/api/fi/bin/", {
+//         method: "POST",
+//         headers: {
+//           "Authorization": `Token ${authToken}`,
+//           "Content-Type": "application/json",
+//           "X-CSRFTOKEN": "5fCQjBoNz7zM7ZqKqMin77easf0qn0jCST9K5G41BAWsAYKBdh3geWvxUNUzoROi",
+//         },
+//         body: JSON.stringify({
+//           file_id: Folders, // Example file_id; adjust as needed
+//         }),
+//       });
+
+//       if (response.ok) {
+//         const data = await response.json();
+//         setRecycleBinItems(data); // Assuming the API returns an array of files
+//       } else {
+//         const errorData = await response.json();
+//         toast.error(errorData.detail || "Failed to fetch recycle bin items.");
+//       }
+//     } catch (error) {
+//       console.error("Error fetching recycle bin items:", error);
+//       toast.error("An error occurred while fetching recycle bin items.");
+//     }
+//   };
+
+//   const fetchBinnedFiles = async (authToken) => {
+//     try {
+//       const response = await fetch("https://proodoosfiles.onrender.com/api/binned-f/", {
+//         method: "GET",
+//         headers: {
+//           "Authorization": `Token ${authToken}`,
+//           "accept": "*/*",
+//         },
+//       });
+
+//       if (response.ok) {
+//         const data = await response.json();
+//         // Ensure the response is an array before updating state
+//         setGetBinnedFiles(Array.isArray(data) ? data : []);
+//       } else {
+//         const errorData = await response.json();
+//         toast.error(errorData.detail || "Failed to fetch binned files.");
+//       }
+//     } catch (error) {
+//       console.error("Error fetching binned files:", error);
+//       toast.error("An error occurred while fetching binned files.");
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("authToken");
+//     navigate("/login");
+//   };
+
+//   const toggleMenu = () => {
+//     setIsMenuOpen(!isMenuOpen);
+//   };
+
+//   const restoreItem = async (id) => {
+//     // Restore logic here...
+//   };
+
+//   const deleteItemPermanently = async (file_id, id) => {
+//     // Delete logic here...
+//   };
+
+//   return (
+//     <div className="p-4">
+//       <ToastContainer />
+//       <div className="flex justify-between items-center mt-[29px] lg:hidden">
+//         <p className="font-[Poppins] text-[#773DD3] text-base font-extrabold ml-[22px]">
+//           Prodoos<span className="font-light">Files</span>
+//         </p>
+//         <img
+//           className="mr-[22px] lg:hidden"
+//           src={menuvector}
+//           alt="hamburgermenuicon"
+//           onClick={toggleMenu}
+//         />
+//       </div>
+
+//       <h2 className="hidden lg:block text-2xl font-bold mb-4">Recycle Bin</h2>
+//       <div className="ml-[300px]">
+//         <h3 className="text-lg font-semibold mt-6">POST Request - Recycle Bin Items</h3>
+//         {recycleBinItems.length === 0 ? (
+//           <p className="text-gray-500">No items retrieved from POST request.</p>
+//         ) : (
+//           <ul>
+//             {recycleBinItems.map((item, index) => (
+//               <li key={index}>{item.name}</li>
+//             ))}
+//           </ul>
+//         )}
+//       </div>
+
+//       <div>
+//         <h3 className="text-lg font-semibold mt-6">GET Request - Binned Files</h3>
+//         {Array.isArray(getBinnedFiles) && getBinnedFiles.length === 0 ? (
+//           <p className="text-gray-500">No items retrieved from GET request.</p>
+//         ) : (
+//           Array.isArray(getBinnedFiles) && (
+//             <ul>
+//               {getBinnedFiles.map((item, index) => (
+//                 <li key={index}>{item.name || "Unnamed File"}</li>
+//               ))}
+//             </ul>
+//           )
+//         )}
+//       </div>
+
+//       {isMenuOpen && (
+//         <div>
+//           <div
+//             className="bg-[#344054B2] opacity-70 w-[100%] h-full fixed top-0 left-0 lg:hidden"
+//             onClick={toggleMenu}
+//           ></div>
+//           <div className="bg-[#fff] w-[272px] h-[100%] fixed left-0 top-0 z-50 lg:hidden">
+//             {/* Sidebar menu here */}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default RecycleBin;
+
+
+
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { ClipLoader } from "react-spinners"; // Import the spinner
 import menuvector from "../../assets/menuvector.png";
-import close from "../../assets/close.png";
-import LogoutRounded from "../../assets/LogoutRounded.png";
-import Home from "../../assets/Home.png";
-import Rating from "../../assets/Rating.png";
-import Disposal from "../../assets/Disposal.png";
-import AddFolder from "../../assets/AddFolder.png";
-
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import Folders from "./Folders";
 
 const RecycleBin = () => {
   const [recycleBinItems, setRecycleBinItems] = useState([]);
-  const [getBinnedFiles, setGetBinnedFiles] = useState([]); // Integrated GET request state
+  const [getBinnedFiles, setGetBinnedFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [token, setToken] = useState();
   const navigate = useNavigate();
@@ -437,22 +595,21 @@ const RecycleBin = () => {
   }, []);
 
   const fetchRecycleBinItems = async (authToken) => {
+    setIsLoading(true); // Start loading
     try {
       const response = await fetch("https://proodoosfiles.onrender.com/api/fi/bin/", {
         method: "POST",
         headers: {
-          "Authorization": `Token ${authToken}`,
+          Authorization: `Token ${authToken}`,
           "Content-Type": "application/json",
           "X-CSRFTOKEN": "5fCQjBoNz7zM7ZqKqMin77easf0qn0jCST9K5G41BAWsAYKBdh3geWvxUNUzoROi",
         },
-        body: JSON.stringify({
-          file_id: Folders, // Example file_id; adjust as needed
-        }),
+        body: JSON.stringify({ file_id: "example_id" }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        setRecycleBinItems(data); // Assuming the API returns an array of files
+        setRecycleBinItems(data);
       } else {
         const errorData = await response.json();
         toast.error(errorData.detail || "Failed to fetch recycle bin items.");
@@ -460,22 +617,24 @@ const RecycleBin = () => {
     } catch (error) {
       console.error("Error fetching recycle bin items:", error);
       toast.error("An error occurred while fetching recycle bin items.");
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
   const fetchBinnedFiles = async (authToken) => {
+    setIsLoading(true); // Start loading
     try {
       const response = await fetch("https://proodoosfiles.onrender.com/api/binned-f/", {
         method: "GET",
         headers: {
-          "Authorization": `Token ${authToken}`,
-          "accept": "*/*",
+          Authorization: `Token ${authToken}`,
+          accept: "*/*",
         },
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Ensure the response is an array before updating state
         setGetBinnedFiles(Array.isArray(data) ? data : []);
       } else {
         const errorData = await response.json();
@@ -484,6 +643,8 @@ const RecycleBin = () => {
     } catch (error) {
       console.error("Error fetching binned files:", error);
       toast.error("An error occurred while fetching binned files.");
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -494,14 +655,6 @@ const RecycleBin = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const restoreItem = async (id) => {
-    // Restore logic here...
-  };
-
-  const deleteItemPermanently = async (file_id, id) => {
-    // Delete logic here...
   };
 
   return (
@@ -520,33 +673,41 @@ const RecycleBin = () => {
       </div>
 
       <h2 className="hidden lg:block text-2xl font-bold mb-4">Recycle Bin</h2>
-      <div className="ml-[300px]">
-        <h3 className="text-lg font-semibold mt-6">POST Request - Recycle Bin Items</h3>
-        {recycleBinItems.length === 0 ? (
-          <p className="text-gray-500">No items retrieved from POST request.</p>
-        ) : (
-          <ul>
-            {recycleBinItems.map((item, index) => (
-              <li key={index}>{item.name}</li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center items-center mt-10">
+          <ClipLoader color="#773DD3" size={50} /> {/* Spinner */}
+        </div>
+      ) : (
+        <div>
+          <div className="ml-[300px]">
+            <h3 className="text-lg font-semibold mt-6">POST Request - Recycle Bin Items</h3>
+            {recycleBinItems.length === 0 ? (
+              <p className="text-gray-500">No items retrieved from POST request.</p>
+            ) : (
+              <ul>
+                {recycleBinItems.map((item, index) => (
+                  <li key={index}>{item.name}</li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mt-6">GET Request - Binned Files</h3>
-        {Array.isArray(getBinnedFiles) && getBinnedFiles.length === 0 ? (
-          <p className="text-gray-500">No items retrieved from GET request.</p>
-        ) : (
-          Array.isArray(getBinnedFiles) && (
-            <ul>
-              {getBinnedFiles.map((item, index) => (
-                <li key={index}>{item.name || "Unnamed File"}</li>
-              ))}
-            </ul>
-          )
-        )}
-      </div>
+          <div>
+            <h3 className="text-lg font-semibold mt-6">GET Request - Binned Files</h3>
+            {Array.isArray(getBinnedFiles) && getBinnedFiles.length === 0 ? (
+              <p className="text-gray-500">No items retrieved from GET request.</p>
+            ) : (
+              Array.isArray(getBinnedFiles) && (
+                <ul>
+                  {getBinnedFiles.map((item, index) => (
+                    <li key={index}>{item.name || "Unnamed File"}</li>
+                  ))}
+                </ul>
+              )
+            )}
+          </div>
+        </div>
+      )}
 
       {isMenuOpen && (
         <div>
@@ -564,5 +725,3 @@ const RecycleBin = () => {
 };
 
 export default RecycleBin;
-
-

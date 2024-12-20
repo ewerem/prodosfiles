@@ -58,7 +58,7 @@ const Create = () => {
             Authorization: `Token ${token}`,
           },
           body: JSON.stringify({
-            // folder_name: "String",
+            
             folder_name: folderName.trim(),
             parent_folder_id: selectedParentId, // Add parent folder ID
 
