@@ -49,11 +49,8 @@
 
 // export default App;
 
-<<<<<<< HEAD
-=======
 // Dashboard
 
->>>>>>> 378edce7840cd09fe64c03a8562a935d0ebba8d6
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './Pages/Auth/Login';
