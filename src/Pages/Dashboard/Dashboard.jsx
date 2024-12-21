@@ -24,7 +24,7 @@
 //   ]);
 
 //   useEffect(() => {
-//       const storedToken = localStorage.getItem("authToken");    
+//       const storedToken = localStorage.getItem("authToken");
 //       if (storedToken) {
 //         setToken(storedToken);
 //       } else {
@@ -78,10 +78,9 @@
 //     toast.success("File removed successfully");
 //   };
 
-
 //   const handleFolderUpload = async (event) => {
 //     const folderFiles = event.target.files;
-  
+
 //     if (!token) {
 //       toast.error("Authentication token is missing.");
 //       return;
@@ -94,7 +93,7 @@
 //       sharedWith: [],
 //       size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
 //   }));
-  
+
 //     setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
 //     // toast.success("Folder uploaded successfully!");
 
@@ -104,7 +103,6 @@
 //     const formData = new FormData();
 //     Array.from(folderFiles).forEach((file) => formData.append("files", file));
 
-    
 //     // const logFormData = (formData) => {
 //     //   console.log("Logging FormData items:");
 //     //   for (const [key, value] of formData.entries()) {
@@ -112,9 +110,9 @@
 //     //   }
 //     // };
 //     // logFormData(formData)
-  
+
 //     setIsLoading(true);
-    
+
 //     try {
 //       const response = await fetch(
 //         "https://proodoosfiles.onrender.com/api/upload_file/",
@@ -126,18 +124,18 @@
 //           body: formData,
 //         }
 //       );
-  
+
 //       const data = await response.json();
 //       console.log('====================================');
 //       console.log(data);
 //       console.log('====================================');
-  
+
 //       if (!response.ok) {
 //         const errorMessage =
 //           data.message || `Failed with status code ${response.status}`;
 //         throw new Error(errorMessage);
 //       }
-  
+
 //       // toast.success("Folder created successfully!");
 //       // setFolderName("");
 //     } catch (error) {
@@ -147,7 +145,6 @@
 //       setIsLoading(false);
 //     }
 //   };
-  
 
 //   useEffect(() => {
 //     const fetchSearchResults = async () => {
@@ -282,13 +279,11 @@
 //         ))}
 //       </div>
 
-      
 //     </div>
 //   );
 // };
 
 // export default Dashboard;
-
 
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
@@ -439,31 +434,28 @@
 //   //   }
 //   // };
 
-
-
-
 //   const handleFolderUpload = async (event) => {
 //     const folderFiles = event.target.files;
-  
+
 //     if (!token) {
 //       toast.error("Authentication token is missing.");
 //       return;
 //     }
-  
+
 //     // Check if folderFiles has content
 //     if (!folderFiles.length) {
 //       toast.error("No files selected.");
 //       return;
 //     }
-  
+
 //     // Create a FormData object
 //     const formData = new FormData();
 //     Array.from(folderFiles).forEach((file) => {
 //       formData.append("files", file);
 //     });
-  
+
 //     setIsLoading(true);
-  
+
 //     try {
 //       const response = await axios.post(
 //         "https://proodoosfiles.onrender.com/api/upload_file/",
@@ -475,7 +467,7 @@
 //           },
 //         }
 //       );
-  
+
 //       if (response.status === 200) {
 //         toast.success("Folder uploaded successfully!");
 //         fetchUserFiles(token); // Update file list after successful upload
@@ -489,7 +481,7 @@
 //       setIsLoading(false);
 //     }
 //   };
-  
+
 //   return (
 //     <div>
 //       <ToastContainer />
@@ -625,7 +617,7 @@ const Dashboard = () => {
   const [shareModal, setShareModal] = useState({ isOpen: false, fileId: null });
   const [shareWith, setShareWith] = useState("");
   const [files, setFiles] = useState([]);
-  
+
   const [folderName, setFolderName] = useState("");
 
   useEffect(() => {
@@ -641,12 +633,15 @@ const Dashboard = () => {
   const fetchUserFiles = async (authToken) => {
     setIsLoading(true);
     try {
-      const response = await axios.get("https://proodoosfiles.onrender.com/api/user-files/", {
-        headers: {
-          Accept: "*/*",
-          Authorization: `Token ${authToken}`,
-        },
-      });
+      const response = await axios.get(
+        "https://proodoosfiles.onrender.com/api/user-files/",
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Token ${authToken}`,
+          },
+        }
+      );
       setFiles(response.data);
       toast.success("Files fetched successfully!");
     } catch (error) {
@@ -754,27 +749,27 @@ const Dashboard = () => {
       toast.error("Please enter an email or username to share with.");
       return;
     }
-  
+
     const { fileId, folderId, type } = shareModal;
-  
+
     if (!fileId && !folderId) {
       toast.error("No valid ID provided for sharing.");
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       const payload = {
         shareWith,
       };
-  
+
       if (type === "file") {
         payload.fileId = fileId;
       } else if (type === "folder") {
         payload.folderId = folderId;
       }
-  
+
       const response = await axios.post(
         `https://proodoosfiles.onrender.com/api/share_file/`,
         payload,
@@ -784,13 +779,22 @@ const Dashboard = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
-        toast.success(`${type === "file" ? "File" : "Folder"} shared successfully!`);
-        setShareModal({ isOpen: false, fileId: null, folderId: null, type: null });
+        toast.success(
+          `${type === "file" ? "File" : "Folder"} shared successfully!`
+        );
+        setShareModal({
+          isOpen: false,
+          fileId: null,
+          folderId: null,
+          type: null,
+        });
         setShareWith("");
       } else {
-        throw new Error(response.data.message || `Failed to share the ${type}.`);
+        throw new Error(
+          response.data.message || `Failed to share the ${type}.`
+        );
       }
     } catch (error) {
       console.error("Error sharing the item:", error);
@@ -799,7 +803,6 @@ const Dashboard = () => {
       setIsLoading(false);
     }
   };
-  
 
   const handleShare = (fileId) => {
     setShareModal({ isOpen: true, fileId });
@@ -834,7 +837,7 @@ const Dashboard = () => {
 
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <ClipLoader color="#4A90E2" size={50} />
+          <ClipLoader color="#773DD3" size={50} />
         </div>
       )}
 
@@ -897,7 +900,11 @@ const Dashboard = () => {
         </Link>
         <div className="border border-[#DDDDDD] mt-[20px] w-[262px] lg:h-[166px] flex flex-col items-center justify-center">
           <label htmlFor="folderUpload" className="cursor-pointer text-center">
-            <img src={uploadcloud} alt="Upload" className="w-[40px] h-[40px] mb-[10px]" />
+            <img
+              src={uploadcloud}
+              alt="Upload"
+              className="w-[40px] h-[40px] mb-[10px]"
+            />
             <p>Upload Folder</p>
           </label>
           <input

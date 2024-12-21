@@ -14,6 +14,8 @@ import Home from "../../assets/Home.png";
 import Rating from "../../assets/Rating.png";
 import Disposal from "../../assets/Disposal.png";
 import AddFolder from "../../assets/AddFolder.png";
+import folder from "../../assets/folder.png";
+import starred from "../../assets/starred.png";
 
 const Create = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,9 +25,14 @@ const Create = () => {
   const [folders, setFolders] = useState([]);
   const [selectedParentId, setSelectedParentId] = useState(null);
 
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("authToken"); // Remove token (or adjust based on auth implementation)
+    navigate("/login"); // Redirect to login page
+  };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");    
+    const storedToken = localStorage.getItem("authToken");
     if (storedToken) {
       setToken(storedToken);
     } else {
@@ -47,7 +54,7 @@ const Create = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
       const response = await fetch(
         "https://proodoosfiles.onrender.com/api/create-f/",
@@ -58,15 +65,11 @@ const Create = () => {
             Authorization: `Token ${token}`,
           },
           body: JSON.stringify({
-            
             folder_name: folderName.trim(),
             parent_folder_id: selectedParentId, // Add parent folder ID
-
           }),
         }
       );
-
-      
 
       const data = await response.json();
 
@@ -86,27 +89,24 @@ const Create = () => {
     }
   };
 
-
-
-
   const handleShareFolder = async (folderId, sharedWithEmail) => {
     if (!folderId) {
       toast.error("Folder ID cannot be empty.");
       return;
     }
-  
+
     if (!sharedWithEmail.trim()) {
       toast.error("Shared email cannot be empty.");
       return;
     }
-  
+
     if (!token) {
       toast.error("Authentication token is missing.");
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       const response = await fetch(
         "https://proodoosfiles.onrender.com/api/fo/sharing/",
@@ -122,15 +122,15 @@ const Create = () => {
           }),
         }
       );
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         const errorMessage =
           data.message || `Failed with status code ${response.status}`;
         throw new Error(errorMessage);
       }
-  
+
       toast.success("Folder shared successfully!");
     } catch (error) {
       console.error("Error during folder sharing:", error);
@@ -139,7 +139,6 @@ const Create = () => {
       setIsLoading(false);
     }
   };
-  
 
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -216,6 +215,90 @@ const Create = () => {
                 </h3>
               </div>
             </Link>
+
+            <div className="flex gap-2 ml-[24px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer w-[15px] h-[20px] "
+                src={folder}
+                alt="folders"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Folders
+              </h3>
+            </div>
+
+            <div className="flex gap-2 ml-[24px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer w-[15px] h-[20px]"
+                src={starred}
+                alt="Starred"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Starred
+              </h3>
+            </div>
+
+            <div className="flex  ml-[18px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={Disposal}
+                alt="Disposalicon"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Recycle Bin
+              </h3>
+            </div>
+
+            <div className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={FTP}
+                alt="Createicon"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Create
+              </h3>
+            </div>
+
+            <div
+              className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200 cursor-pointer"
+              onClick={() => setShowConfirm(true)} // Open confirmation modal
+            >
+              <img
+                className="object-contain"
+                src={LogoutRounded}
+                alt="Logout"
+              />
+              <h3 className="text-[#242424] font-[Poppins] text-base font-normal">
+                Logout
+              </h3>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
+            <p className="mb-6 text-gray-600">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -224,4 +307,3 @@ const Create = () => {
 };
 
 export default Create;
-

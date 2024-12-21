@@ -51,46 +51,44 @@ const Logout = () => {
   //   }
   // };
 
-
   // Handle file upload
-const handleUpload = async () => {
-  if (!selectedFile) {
-    setUploadStatus("Please select a file to upload.");
-    return;
-  }
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setUploadStatus("Please select a file to upload.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("files", selectedFile);
-  formData.append("folder_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6");
-  formData.append("override", "false");
+    const formData = new FormData();
+    formData.append("files", selectedFile);
+    formData.append("folder_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    formData.append("override", "false");
 
-  try {
-    setUploadStatus("Uploading...");
+    try {
+      setUploadStatus("Uploading...");
 
-    // Retrieve CSRF token and authentication token from storage or context
-    const csrfToken = ""; // Replace with dynamic retrieval
-    const authToken = localStorage.getItem("authToken"); // Assuming the auth token is stored in localStorage
+      // Retrieve CSRF token and authentication token from storage or context
+      const csrfToken = ""; // Replace with dynamic retrieval
+      const authToken = localStorage.getItem("authToken"); // Assuming the auth token is stored in localStorage
 
-    const response = await axios.post(
-      "https://proodoosfiles.onrender.com/api/upload_file/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "X-CSRFTOKEN": csrfToken,
-          Authorization: `Token ${authToken}`, // Include the auth token if required
-        },
-      }
-    );
+      const response = await axios.post(
+        "https://proodoosfiles.onrender.com/api/upload_file/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "X-CSRFTOKEN": csrfToken,
+            Authorization: `Token ${authToken}`, // Include the auth token if required
+          },
+        }
+      );
 
-    setUploadStatus("Upload successful!");
-    console.log("Upload response:", response.data);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    setUploadStatus("Upload failed. Please try again.");
-  }
-};
-
+      setUploadStatus("Upload successful!");
+      console.log("Upload response:", response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setUploadStatus("Upload failed. Please try again.");
+    }
+  };
 
   // Handle logout
   const handleLogout = () => {
@@ -206,7 +204,6 @@ const handleUpload = async () => {
             <div className="rounded-full h-[50px] pt-3 pb-3 pl-4 pr-4 bg-[#F2F4F7]">
               JB
             </div>
-          
 
             <div className="w-[428px] border border-[#EAEAEA] pt-[10px]">
               <label htmlFor="fileUpload" className="cursor-pointer">

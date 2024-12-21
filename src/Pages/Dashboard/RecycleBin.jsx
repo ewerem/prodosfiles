@@ -17,7 +17,6 @@
 // const RecycleBin = () => {
 //   const [showConfirm, setShowConfirm] = useState(false);
 
-
 //   const handleLogout = () => {
 //     localStorage.removeItem("authToken"); // Remove token (or adjust based on auth implementation)
 //     navigate("/login"); // Redirect to login page
@@ -25,14 +24,11 @@
 
 //   const navigate = useNavigate();
 
-
 //   const [isMenuOpen,setIsMenuOpen] = useState(false)
 
 //   const toggleMenu = () => {
 //     setIsMenuOpen(!isMenuOpen);
 //   };
-
-  
 
 //   // State to manage recycle bin items
 //   const [recycleBinItems, setRecycleBinItems] = useState([
@@ -40,10 +36,6 @@
 //     { id: 2, file_id: "2fa75f64-5717-4562-b3fc-2c963f66afa7", name: "Image 2", deletedAt: "2024-11-24" },
 //     { id: 3, file_id: "1fa65f64-5717-4562-b3fc-2c963f66afa8", name: "Video 3", deletedAt: "2024-11-23" },
 //   ]);
-      
-     
-
-
 
 //   // State to manage authentication token
 //   const [token, setToken] = useState();
@@ -60,11 +52,6 @@
 
 //   }, []);
 
-
-  
-
-
-
 //   // Function to restore an item (local operation)
 //   // const restoreItem = (id) => {
 //   //   setRecycleBinItems((prevItems) =>
@@ -80,8 +67,6 @@
 //   //     return;
 //   //   }
 
-
-    
 //   //   try {
 //   //     // Make the POST request to permanently delete the item
 //   //     const response = await fetch("https://proodoosfiles.onrender.com/api/fi/bin/", {
@@ -93,8 +78,6 @@
 //   //       },
 //   //       body: JSON.stringify({ file_id }),
 //   //     });
-
-
 
 //   //     const data = await response.json();
 
@@ -149,7 +132,6 @@
 //       },
 //       body: JSON.stringify({ file_id: item.file_id }), // Send the file_id to restore the item
 //     });
-  
 
 //     const data = await response.json();
 
@@ -177,28 +159,26 @@
 //   }
 // };
 
-
-
 //   const deleteItemPermanently = async (file_id, folder_id, id) => {
 //     if (!token) {
 //       toast.error("You must be logged in to delete items.");
 //       return;
 //     }
-  
+
 //     try {
 //       // Make the POST request to permanently delete the item
 //       const response = await fetch("https://proodoosfiles.onrender.com/api/fo/del/", {
 //         method: "POST", // Use POST for deletion
 //         headers: {
-//           "Content-Type": "application/json", 
+//           "Content-Type": "application/json",
 //           "Authorization": `Token ${token}`, // Pass the token in the Authorization header
 //           "X-CSRFTOKEN": "5OeKiqmKEiWxPacQoMREqP0zWnDAXeOLN0kA05rIkgvsqpOZ60sgkFEqqqdhdOTU", // CSRF token
 //         },
 //         body: JSON.stringify({ file_id, folder_id }), // Send both file_id and folder_id in the body
 //       });
-  
+
 //       const data = await response.json();
-  
+
 //       if (response.ok) {
 //         // Successfully deleted, now update the UI
 //         setRecycleBinItems((prevItems) =>
@@ -222,7 +202,7 @@
 //       });
 //     }
 //   };
-  
+
 //   return (
 //     <div className="p-4">
 //       <ToastContainer />
@@ -238,8 +218,6 @@
 //           onClick={toggleMenu}
 //         />
 //       </div>
-
-      
 
 //       <h2 className="hidden lg:block text-2xl font-bold mb-4">Recycle Bin</h2>
 //       {recycleBinItems.length === 0 ? (
@@ -351,8 +329,6 @@
 //               </div>
 //             </Link>
 
-            
-
 //             {/* Logout link */}
 //             <div
 //               className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200 cursor-pointer"
@@ -401,7 +377,6 @@
 // };
 
 // export default RecycleBin;
-
 
 // import React, { useState, useEffect } from "react";
 // import { ToastContainer, toast } from "react-toastify";
@@ -565,8 +540,6 @@
 
 // export default RecycleBin;
 
-
-
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners"; // Import the spinner
@@ -574,12 +547,20 @@ import menuvector from "../../assets/menuvector.png";
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import Home from "../../assets/Home.png";
+import close from "../../assets/close.png";
+import folder from "../../assets/folder.png";
+import starred from "../../assets/starred.png";
+import Disposal from "../../assets/Disposal.png";
+import FTP from "../../assets/FTP.png";
+import LogoutRounded from "../../assets/LogoutRounded.png";
 
 const RecycleBin = () => {
   const [recycleBinItems, setRecycleBinItems] = useState([]);
   const [getBinnedFiles, setGetBinnedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [token, setToken] = useState();
   const navigate = useNavigate();
 
@@ -597,15 +578,19 @@ const RecycleBin = () => {
   const fetchRecycleBinItems = async (authToken) => {
     setIsLoading(true); // Start loading
     try {
-      const response = await fetch("https://proodoosfiles.onrender.com/api/fi/bin/", {
-        method: "POST",
-        headers: {
-          Authorization: `Token ${authToken}`,
-          "Content-Type": "application/json",
-          "X-CSRFTOKEN": "5fCQjBoNz7zM7ZqKqMin77easf0qn0jCST9K5G41BAWsAYKBdh3geWvxUNUzoROi",
-        },
-        body: JSON.stringify({ file_id: "example_id" }),
-      });
+      const response = await fetch(
+        "https://proodoosfiles.onrender.com/api/fi/bin/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${authToken}`,
+            "Content-Type": "application/json",
+            "X-CSRFTOKEN":
+              "5fCQjBoNz7zM7ZqKqMin77easf0qn0jCST9K5G41BAWsAYKBdh3geWvxUNUzoROi",
+          },
+          body: JSON.stringify({ file_id: "example_id" }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -625,13 +610,16 @@ const RecycleBin = () => {
   const fetchBinnedFiles = async (authToken) => {
     setIsLoading(true); // Start loading
     try {
-      const response = await fetch("https://proodoosfiles.onrender.com/api/binned-f/", {
-        method: "GET",
-        headers: {
-          Authorization: `Token ${authToken}`,
-          accept: "*/*",
-        },
-      });
+      const response = await fetch(
+        "https://proodoosfiles.onrender.com/api/binned-f/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Token ${authToken}`,
+            accept: "*/*",
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -680,9 +668,13 @@ const RecycleBin = () => {
       ) : (
         <div>
           <div className="ml-[300px]">
-            <h3 className="text-lg font-semibold mt-6">POST Request - Recycle Bin Items</h3>
+            <h3 className="text-lg font-semibold mt-6">
+              POST Request - Recycle Bin Items
+            </h3>
             {recycleBinItems.length === 0 ? (
-              <p className="text-gray-500">No items retrieved from POST request.</p>
+              <p className="text-gray-500">
+                No items retrieved from POST request.
+              </p>
             ) : (
               <ul>
                 {recycleBinItems.map((item, index) => (
@@ -693,9 +685,13 @@ const RecycleBin = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mt-6">GET Request - Binned Files</h3>
+            <h3 className="text-lg font-semibold mt-6">
+              GET Request - Binned Files
+            </h3>
             {Array.isArray(getBinnedFiles) && getBinnedFiles.length === 0 ? (
-              <p className="text-gray-500">No items retrieved from GET request.</p>
+              <p className="text-gray-500">
+                No items retrieved from GET request.
+              </p>
             ) : (
               Array.isArray(getBinnedFiles) && (
                 <ul>
@@ -716,7 +712,111 @@ const RecycleBin = () => {
             onClick={toggleMenu}
           ></div>
           <div className="bg-[#fff] w-[272px] h-[100%] fixed left-0 top-0 z-50 lg:hidden">
-            {/* Sidebar menu here */}
+            <div className="flex justify-between items-center">
+              <p className="mt-[22px] font-[Poppins] text-[#773DD3] text-base font-extrabold ml-[22px]">
+                Prodoos<span className="font-light">Files</span>
+              </p>
+              <img
+                className="mt-[28px] mr-[20px]"
+                src={close}
+                alt="close"
+                onClick={toggleMenu}
+              />
+            </div>
+
+            <div className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={Home}
+                alt="Dashboard"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Dashboard
+              </h3>
+            </div>
+
+            <div className="flex gap-2 ml-[24px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer w-[15px] h-[20px] "
+                src={folder}
+                alt="folders"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Folders
+              </h3>
+            </div>
+
+            <div className="flex gap-2 ml-[24px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer w-[15px] h-[20px]"
+                src={starred}
+                alt="Starred"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Starred
+              </h3>
+            </div>
+
+            <div className="flex  ml-[18px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={Disposal}
+                alt="Disposalicon"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Recycle Bin
+              </h3>
+            </div>
+
+            <div className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={FTP}
+                alt="Createicon"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Create
+              </h3>
+            </div>
+            <div
+              className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200 cursor-pointer"
+              onClick={() => setShowConfirm(true)} // Open confirmation modal
+            >
+              <img
+                className="object-contain"
+                src={LogoutRounded}
+                alt="Logout"
+              />
+              <h3 className="text-[#242424] font-[Poppins] text-base font-normal">
+                Logout
+              </h3>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
+            <p className="mb-6 text-gray-600">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       )}
