@@ -8,6 +8,9 @@ import Home from "../../assets/Home.png";
 import Rating from "../../assets/Rating.png";
 import Disposal from "../../assets/Disposal.png";
 import AddFolder from "../../assets/AddFolder.png";
+import starred from "../../assets/starred.png";
+import folder from "../../assets/folder.png";
+import FTP from "../../assets/FTP.png";
 import { ToastContainer, toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -66,7 +69,9 @@ const Folders = () => {
         toast.success("Folders loaded successfully!");
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || "Failed to load folders. Please try again.");
+        toast.error(
+          errorData.message || "Failed to load folders. Please try again."
+        );
       }
     } catch (error) {
       console.error("Error fetching folders:", error);
@@ -112,15 +117,20 @@ const Folders = () => {
 
       if (!response.ok) {
         const errorMessage =
-          data.message || `Failed to delete folder with status ${response.status}`;
+          data.message ||
+          `Failed to delete folder with status ${response.status}`;
         throw new Error(errorMessage);
       }
 
-      setFolders((prevFolders) => prevFolders.filter((folder) => folder.id !== id));
+      setFolders((prevFolders) =>
+        prevFolders.filter((folder) => folder.id !== id)
+      );
       toast.success("Folder deleted successfully!");
     } catch (error) {
       console.error("Error during folder deletion:", error);
-      toast.error(error.message || "An error occurred while deleting the folder.");
+      toast.error(
+        error.message || "An error occurred while deleting the folder."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -137,7 +147,9 @@ const Folders = () => {
       navigator
         .share(shareData)
         .then(() => toast.success("Folder shared successfully!"))
-        .catch((error) => toast.error("Error sharing folder: " + error.message));
+        .catch((error) =>
+          toast.error("Error sharing folder: " + error.message)
+        );
     } else {
       navigator.clipboard
         .writeText(shareData.url)
@@ -192,6 +204,18 @@ const Folders = () => {
   return (
     <div>
       <ToastContainer />
+      {/* Header for small screens */}
+      <div className="flex justify-between items-center mt-[29px] lg:hidden">
+        <p className="font-[Poppins] text-[#773DD3] text-base font-extrabold ml-[22px]">
+          Prodoos<span className="font-light">Files</span>
+        </p>
+        <img
+          className="mr-[22px] lg:hidden"
+          src={menuvector}
+          alt="hamburgermenuicon"
+          onClick={toggleMenu}
+        />
+      </div>
       <div className="w-[80%] h-[586px] md:w-[50%] md:ml-[300px] md:h-[350px] lg:w-[72%] lg:h-[422px] border-[#EAEAEA] border lg:ml-[300px] ml-[44px] mt-[45px]">
         <div className="grid grid-cols-6 gap-[16px] px-[18px] mt-[24px]">
           {["Name", "Modified", "Shared With", "Size", "Share", "Delete"].map(
@@ -212,7 +236,8 @@ const Folders = () => {
               height="80"
               width="80"
               radius="9"
-              color="#4fa94d"
+              // color="#4fa94d"
+              color="#773DD3"
               ariaLabel="three-dots-loading"
               visible={true}
             />
@@ -225,6 +250,123 @@ const Folders = () => {
           </p>
         )}
       </div>
+
+      {isMenuOpen && (
+        <div>
+          <div
+            className="bg-[#344054B2] opacity-70 w-[100%] h-full fixed top-0 left-0 lg:hidden"
+            onClick={toggleMenu}
+          ></div>
+          <div className="bg-[#fff] w-[272px] h-[100%] fixed left-0 top-0 z-50 lg:hidden">
+            <div className="flex justify-between items-center">
+              <p className="mt-[22px] font-[Poppins] text-[#773DD3] text-base font-extrabold ml-[22px]">
+                Prodoos<span className="font-light">Files</span>
+              </p>
+              <img
+                className="mt-[28px] mr-[20px]"
+                src={close}
+                alt="close"
+                onClick={toggleMenu}
+              />
+            </div>
+
+            <div className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={Home}
+                alt="Dashboard"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Dashboard
+              </h3>
+            </div>
+
+            <div className="flex gap-2 ml-[24px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer w-[15px] h-[20px] "
+                src={folder}
+                alt="folders"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Folders
+              </h3>
+            </div>
+
+            <div className="flex gap-2 ml-[24px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer w-[15px] h-[20px]"
+                src={starred}
+                alt="Starred"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Starred
+              </h3>
+            </div>
+
+            <div className="flex  ml-[18px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={Disposal}
+                alt="Disposalicon"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Recycle Bin
+              </h3>
+            </div>
+
+            <div className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200">
+              <img
+                className="object-contain cursor-pointer"
+                src={FTP}
+                alt="Createicon"
+              />
+              <h3 className="text-[#242424] cursor-pointer font-[Poppins] text-base font-normal">
+                Create
+              </h3>
+            </div>
+
+            <div
+              className="flex ml-[16px] mt-[27px] hover:bg-[#E3E0E833] transition-colors duration-200 cursor-pointer"
+              onClick={() => setShowConfirm(true)} // Open confirmation modal
+            >
+              <img
+                className="object-contain"
+                src={LogoutRounded}
+                alt="Logout"
+              />
+              <h3 className="text-[#242424] font-[Poppins] text-base font-normal">
+                Logout
+              </h3>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
+            <p className="mb-6 text-gray-600">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
