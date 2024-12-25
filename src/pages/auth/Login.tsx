@@ -12,12 +12,22 @@ import {
 } from "@mui/material";
 import LoginForm from "../../components/auth/LoginForm";
 import { Info } from "@mui/icons-material";
-import { ToastContainer, toast } from "react-toastify"; // Import react-toastify for toasts
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const setLoading = React.useState(false)[1];
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/register");
+  };
+
+  const handleNavigateForgotPass = () => {
+    navigate("/forgot-password");
+  };
 
   //onload popup
   const [showPopup, setShowPopup] = useState(false);
@@ -50,16 +60,17 @@ const Login: React.FC = () => {
           <DialogContentText>
             Before logging in, ensure you have registered an account. If you
             haven't, please{" "}
-            <a
-              href="/register"
+            <span
+              onClick={handleNavigate}
               style={{
                 color: "#004ba0",
                 textDecoration: "none",
                 fontWeight: "bold",
+                cursor: "pointer",
               }}
             >
               click here
-            </a>{" "}
+            </span>{" "}
             to register.
           </DialogContentText>
         </DialogContent>
@@ -118,8 +129,8 @@ const Login: React.FC = () => {
 
           <Typography variant="body1" textAlign="center" marginTop="1.5rem">
             Don't have an account?{" "}
-            <a
-              href="/register"
+            <span
+              onClick={handleNavigate}
               style={{
                 color: "#004ba0",
                 textDecoration: "none",
@@ -127,13 +138,13 @@ const Login: React.FC = () => {
               }}
             >
               Register here
-            </a>
+            </span>
           </Typography>
 
           <Typography variant="body2" textAlign="center" marginTop="1.5rem">
             Forgot your password?{" "}
-            <a
-              href="/forgot-password"
+            <span
+              onClick={handleNavigateForgotPass}
               style={{
                 color: "red",
                 textDecoration: "none",
@@ -141,7 +152,7 @@ const Login: React.FC = () => {
               }}
             >
               Click here
-            </a>
+            </span>
           </Typography>
         </Paper>
       </Box>

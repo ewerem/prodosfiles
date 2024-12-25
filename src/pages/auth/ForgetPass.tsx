@@ -15,12 +15,19 @@ import {
 import ForgetPassForm from "../../components/auth/ForgetPassForm";
 import { Info } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 
 const ForgetPass: React.FC = () => {
   const setLoading = React.useState(false)[1];
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
+  const navigate = useNavigate();
+
+  const handleNavigateLogin = () => {
+    navigate("/login");
+  };
 
   // Show toast notifications based on success or error
   const showToast = (message: string, type: "success" | "error") => {
@@ -93,8 +100,8 @@ const ForgetPass: React.FC = () => {
 
           <Typography variant="body1" textAlign="center" marginTop="1.5rem">
             Go back to{" "}
-            <a
-              href="/login"
+            <span
+              onClick={handleNavigateLogin}
               style={{
                 color: "#004ba0",
                 textDecoration: "none",
@@ -102,7 +109,7 @@ const ForgetPass: React.FC = () => {
               }}
             >
               Login
-            </a>
+            </span>
           </Typography>
         </Paper>
       </Box>

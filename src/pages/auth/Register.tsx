@@ -15,6 +15,8 @@ import {
 import RegisterForm from "../../components/auth/RegisterForm";
 import { Info } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify"; // Import react-toastify
+import { useNavigate } from "react-router-dom";
+
 
 const Register: React.FC = () => {
   // State to manage loading, error, success messages, and dialog visibility
@@ -22,6 +24,11 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
+  const navigate = useNavigate();
+
+  const handleNavigateLogin = () => {
+    navigate("/login");
+  };
 
   // Function to show toast notifications
   const showToast = (message: string, type: "success" | "error") => {
@@ -87,8 +94,8 @@ const Register: React.FC = () => {
           )}
 
           <Typography variant="body2" textAlign="center" marginTop="1.5rem">
-            <a
-              href="/login"
+            <span
+              onClick={handleNavigateLogin}
               style={{
                 color: "#004ba0",
                 textDecoration: "none",
@@ -96,7 +103,7 @@ const Register: React.FC = () => {
               }}
             >
               Login here
-            </a>{" "}
+            </span>{" "}
             if you have registered before.
           </Typography>
         </Paper>
@@ -108,7 +115,7 @@ const Register: React.FC = () => {
           Registration Successful
         </DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: "black"}}>
+          <DialogContentText sx={{ color: "black" }}>
             Registration successful. Please check your email to verify your
             account.
           </DialogContentText>
