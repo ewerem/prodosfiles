@@ -18,7 +18,7 @@ import { ToastContainer, toast } from "react-toastify"; // Import react-toastify
 
 const Register: React.FC = () => {
   // State to manage loading, error, success messages, and dialog visibility
-  const [loading, setLoading] = useState(false);
+  const setLoading = React.useState(false)[1];
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility

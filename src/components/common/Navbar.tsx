@@ -27,7 +27,6 @@ import {
   CreateNewFolder,
   RestoreFromTrash,
   FileOpen,
-  UploadFile,
 } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import apiWithToken from "../../utils/apiWithToken";
@@ -93,7 +92,6 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
   const handleUploadDialogOpen = () => {
     setDialogOpen(true);
     handleClose();
-
   };
 
   const handleUploadDialogClose = () => {
@@ -172,17 +170,16 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
 
       console.log("file-response -- ", response);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         handleUploadDialogClose();
         showToast("File uploaded successfully !!", "success");
       } else {
         handleUploadDialogClose();
         showToast("Failed to upload file. Please try again.", "error");
       }
-
     } catch (error) {
       handleUploadDialogClose();
-      showToast("An error occured !!", "error");
+      showToast("An error occurred !!", "error");
     }
   };
 
@@ -217,7 +214,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
                 <ListItemText primary="New Folder" />
               </MenuItem>
               <MenuItem>
-                <ListItem button onClick={handleUploadClick}>
+                <ListItem onClick={handleUploadClick}>
                   <ListItemIcon>
                     <UploadFileIcon />
                   </ListItemIcon>

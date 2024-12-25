@@ -1,4 +1,3 @@
-import React from "react";
 import "./App.css";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -13,11 +12,11 @@ import {
 } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-import Login from "./pages/Auth/Login";
-import Register from "./pages/Auth/Register";
-import EmailVerificationSuccess from "./pages/Auth/EmailVerificationSuccess";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import EmailVerificationSuccess from "./pages/auth/EmailVerificationSuccess";
 import ForgotPass from "./pages/auth/ForgetPass";
-import ResetPass from "./pages/Auth/ResetPass";
+import ResetPass from "./pages/auth/ResetPass";
 import Dashboard from "./pages/dashboard/Dashboard";
 
 import "react-toastify/dist/ReactToastify.css";

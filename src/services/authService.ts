@@ -1,6 +1,4 @@
 import apiClient from "../utils/apiClient";
-import apiWithToken from "../utils/apiWithToken";
-
 
 interface RegisterUserData {
   username: string;
@@ -50,7 +48,7 @@ interface LoginUserData {
 
 export const loginUser = async (
   data: LoginUserData
-): Promise<ApiResponse<{ token: string }>> => {
+): Promise<ApiResponse<{ token: string, username: string }>> => {
   try {
     console.log("Request data: ", data);
     const response = await apiClient.post("/login/", data);

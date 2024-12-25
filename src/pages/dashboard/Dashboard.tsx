@@ -44,8 +44,8 @@ const Dashboard: React.FC = () => {
   };
 
   const user = {
-    username: localStorage.getItem("username"),
-    email: localStorage.getItem("email"),
+    username: localStorage.getItem("username") ?? "",
+    email: localStorage.getItem("email") ?? "",
   };
 
   const fetchFolders = async () => {

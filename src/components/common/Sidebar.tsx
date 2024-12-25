@@ -20,7 +20,6 @@ import {
 } from "@mui/material";
 import {
   CreateNewFolder,
-  UploadFile,
   Folder,
   RestoreFromTrash,
   Logout,
@@ -33,13 +32,13 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import apiForFilesUpload from "../../utils/apiForFilesUpload";
 import { useNavigate } from "react-router-dom";
 
-
 interface SidebarProps {
-  onUploadFile: () => void;
+  // onUploadFile: () => void;
   onLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onUploadFile, onLogout }) => {
+//add onUploadFile if being used
+const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -48,7 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onUploadFile, onLogout }) => {
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-
 
   const handleNewClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -159,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onUploadFile, onLogout }) => {
 
       console.log("file-response -- ", response);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         handleUploadDialogClose();
         showToast("File uploaded successfully !!", "success");
       } else {
@@ -168,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onUploadFile, onLogout }) => {
       }
     } catch (error) {
       handleUploadDialogClose();
-      showToast("An error occured !!", "error");
+      showToast("An error occurred !!", "error");
     }
   };
 
@@ -207,11 +205,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onUploadFile, onLogout }) => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              onUploadFile();
+              // onUploadFile();
               handleMenuClose();
             }}
           >
-            <ListItem button onClick={handleUploadClick}>
+            <ListItem onClick={handleUploadClick}>
               <ListItemIcon>
                 <UploadFileIcon />
               </ListItemIcon>
@@ -229,28 +227,28 @@ const Sidebar: React.FC<SidebarProps> = ({ onUploadFile, onLogout }) => {
 
         <Divider />
         <List>
-          <ListItem button onClick={handleClickFolder}>
+          <ListItem onClick={handleClickFolder}>
             <ListItemIcon>
               <Folder />
             </ListItemIcon>
             <ListItemText primary="Folders" />
           </ListItem>
 
-          <ListItem button onClick={handleClickFiles}>
+          <ListItem onClick={handleClickFiles}>
             <ListItemIcon>
               <FileOpen />
             </ListItemIcon>
             <ListItemText primary="Files" />
           </ListItem>
 
-          <ListItem button>
+          <ListItem>
             <ListItemIcon>
               <RestoreFromTrash />
             </ListItemIcon>
             <ListItemText primary="Recycle Bin" />
           </ListItem>
 
-          <ListItem button onClick={onLogout}>
+          <ListItem onClick={onLogout}>
             <ListItemIcon>
               <Logout sx={{ color: "red" }} />
             </ListItemIcon>

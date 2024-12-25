@@ -6,16 +6,12 @@ import {
   useMediaQuery,
   Typography,
   CircularProgress,
-  Menu,
-  MenuItem,
-  IconButton,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Navbar from "../../components/common/Navbar";
 import Sidebar from "../../components/common/Sidebar";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import apiWithToken from "../../utils/apiWithToken";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 interface File {
@@ -27,7 +23,7 @@ interface File {
 
 const Files: React.FC = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [files, setFiles] = useState<File[]>([]);
@@ -43,8 +39,8 @@ const Files: React.FC = () => {
   };
 
   const user = {
-    username: localStorage.getItem("username"),
-    email: localStorage.getItem("email"),
+    username: localStorage.getItem("username") ?? "",
+    email: localStorage.getItem("email") ?? "",
   };
 
   const fetchFiles = async () => {
