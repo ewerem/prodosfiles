@@ -36,11 +36,15 @@ const Dashboard: React.FC = () => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
 
+  const handleNavigateLogout = () => {
+    navigate("/login");
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("username");
-    window.location.href = "/login";
+    handleNavigateLogout();
   };
 
   const user = {
