@@ -58,6 +58,9 @@ const Register: React.FC = () => {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
+        sx={{
+          marginTop: { xs: '-8rem', sm: '0' },
+        }}
       >
         <Paper
           elevation={3}
