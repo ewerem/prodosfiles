@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Box,
@@ -17,7 +17,7 @@ import { Info } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify";
 
 const ForgetPass: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const setLoading = React.useState(false)[1];
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility

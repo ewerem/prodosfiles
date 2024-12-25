@@ -6,7 +6,6 @@ import {
   Typography,
   Stack,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
@@ -16,7 +15,7 @@ import { Info } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify"; // Import react-toastify for toasts
 
 const Login: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const setLoading = React.useState(false)[1];
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 

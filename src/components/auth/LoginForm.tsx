@@ -52,8 +52,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
         showToast("Login successful!", "success");
 
         //hold base auth details
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("username", response.data.username);
+        localStorage.setItem("token", response.data?.token || "");
+        localStorage.setItem("username", response.data?.username || "");
         localStorage.setItem("email", formData.email);
 
         navigate("/dashboard");

@@ -7,7 +7,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { registerUser } from "../../services/authService";
-import { useNavigate } from "react-router-dom";
 import { AccountCircle, Person, Email, Lock } from "@mui/icons-material";
 
 interface RegisterFormProps {
@@ -31,7 +30,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate(); // useNavigate hook for navigation
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

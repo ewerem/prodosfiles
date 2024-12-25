@@ -7,8 +7,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { ForgetPassUser } from "../../services/authService";
-import { useNavigate } from "react-router-dom";
-import { Email, Lock } from "@mui/icons-material";
+import { Email } from "@mui/icons-material";
 
 interface ForgetPassFormProps {
   showToast: (message: string, type: "success" | "error") => void;
@@ -27,7 +26,6 @@ const ForgetPassForm: React.FC<ForgetPassFormProps> = ({
     email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
