@@ -89,6 +89,10 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
     navigate("/files");
   };
 
+  const handleClickBinFolders = () => {
+    navigate("/bin-folder");
+  };
+
   const handleUploadDialogOpen = () => {
     setDialogOpen(true);
     handleClose();
@@ -240,7 +244,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
                 </ListItemIcon>
                 <ListItemText primary="Files" />
               </MenuItem>
-              <MenuItem>
+              <MenuItem onClick={handleClickBinFolders}>
                 <ListItemIcon>
                   <RestoreFromTrash />
                 </ListItemIcon>

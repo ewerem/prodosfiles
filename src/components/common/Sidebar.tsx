@@ -60,6 +60,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
     navigate("/files");
   };
 
+  const handleClickBinFolders = () => {
+    navigate("/bin-folder");
+  };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -241,7 +245,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
             <ListItemText primary="Files" />
           </ListItem>
 
-          <ListItem>
+          <ListItem onClick={handleClickBinFolders}>
             <ListItemIcon>
               <RestoreFromTrash />
             </ListItemIcon>
