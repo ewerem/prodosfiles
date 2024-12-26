@@ -87,6 +87,10 @@ const Dashboard: React.FC = () => {
   };
 
   const handleRenameDialogOpen = () => {
+    if (!selectedFolder) {
+      showToast("No folder selected to rename.", "error");
+      return;
+    }
     setRenameDialogOpen(true);
     setNewFolderName(selectedFolder.name || "");
     handleMenuCloseRenameFolder();
