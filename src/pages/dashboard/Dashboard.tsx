@@ -9,6 +9,13 @@ import {
   Menu,
   MenuItem,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Button,
+  TextField,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Navbar from "../../components/common/Navbar";
@@ -18,12 +25,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import apiWithToken from "../../utils/apiWithToken";
 import { useNavigate } from "react-router-dom";
 import SourceIcon from "@mui/icons-material/Source";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Folder {
   owner: string;
   name: string;
   created_at: string;
-  id:string;
+  id: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -35,6 +43,10 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogBinOpen, setDialogBinOpen] = useState(false);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
 
   const handleNavigateLogout = () => {
     navigate("/login");
@@ -47,11 +59,54 @@ const Dashboard: React.FC = () => {
     handleNavigateLogout();
   };
 
+  // Show toast notifications based on success or error
+  const showToast = (message: string, type: "success" | "error") => {
+    if (type === "success") {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
+
+  const handleUploadDialogOpen = () => {
+    setDialogOpen(true);
+    handleMenuClose();
+  };
+
+  const handleUploadDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleMoveBinDialogOpen = () => {
+    setDialogBinOpen(true);
+    handleMenuClose();
+  };
+
+  const handleMoveBinDialogClose = () => {
+    setDialogBinOpen(false);
+  };
+
+  const handleRenameDialogOpen = () => {
+    if (!selectedFolder) {
+      showToast("No folder selected to rename.", "error");
+      return;
+    }
+    setRenameDialogOpen(true);
+    setNewFolderName(selectedFolder.name || "");
+    handleMenuCloseRenameFolder();
+  };
+
+  const handleRenameDialogClose = () => {
+    setRenameDialogOpen(false);
+    setNewFolderName("");
+  };
+
   const user = {
     username: localStorage.getItem("username") ?? "",
     email: localStorage.getItem("email") ?? "",
   };
 
+  //fetch all folder
   const fetchFolders = async () => {
     setLoading(true);
     try {
@@ -83,9 +138,15 @@ const Dashboard: React.FC = () => {
     setSelectedFolder(folder);
   };
 
+  //wit making setSelectedFolder = null
   const handleMenuClose = () => {
     setMenuAnchor(null);
     setSelectedFolder(null);
+  };
+
+  //without making setSelectedFolder = null
+  const handleMenuCloseRenameFolder = () => {
+    setMenuAnchor(null);
   };
 
   const handleOpenFolder = () => {
@@ -97,45 +158,109 @@ const Dashboard: React.FC = () => {
     handleMenuClose();
   };
 
+  //delete a folder
   const handleDeleteFolder = async () => {
+    handleUploadDialogOpen();
     if (selectedFolder) {
-    //   try {
-    //     await apiWithToken.delete(`/delete-folder/${selectedFolder.name}/`);
-    //     fetchFolders();
-    //   } catch (error) {
-    //     console.error("Error deleting folder:", error);
-    //   }
+      try {
+        const data = {
+          folder_id: selectedFolder.id,
+        };
+        const jsonData = JSON.stringify(data);
 
-    //   try {
-    //     const data = ${selectedFolder.id};
+        const response = await apiWithToken.post("/fo/del/", jsonData);
 
-    //     console.log("folder-id -- ", data)
-    //     return
-  
-    //     const response = await apiWithToken.post("/create-f/", data);
-  
-    //     if (!response.data.responseText) {
-    //       showToast("Failed to create folder. Please try again.", "error");
-    //       throw new Error("Failed to create folder");
-    //     } else {
-    //       showToast(response.data.responseText, "success");
-    //       // set the forms to empty and stop loader
-    //       setFolderName("");
-    //       setError("");
-    //       setLoading(false);
-    //     }
-    //   } catch (error: any) {
-    //     const responseText =
-    //       error.response?.data?.folder_name?.[0] || "An error occurred !!";
-    //     showToast(responseText, "error");
-    //   } finally {
-    //     setLoading(false);
-    //   }
+        console.log(response);
 
+        if (response.status === 200) {
+          showToast(response.data.responseText, "success");
+          fetchFolders();
+          handleUploadDialogClose();
+        } else {
+          showToast(response.data.responseText, "error");
+          handleUploadDialogClose();
+        }
+      } catch (error: any) {
+        const responseText = "An error occurred !!";
+        showToast(responseText, "error");
+        handleUploadDialogClose();
+      } finally {
+        setLoading(false);
+      }
     }
     handleMenuClose();
   };
 
+  //rename folder name
+  const handleRenameFolder = async () => {
+    if (!selectedFolder) {
+      showToast("No folder selected for renaming.", "error");
+      handleRenameDialogClose(); // Ensure dialog closes even on error
+      return;
+    }
+
+    if (!newFolderName.trim()) {
+      showToast("Please provide a valid folder name.", "error");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const data = {
+        folder_id: selectedFolder.id,
+        new_name: newFolderName.trim(),
+        override: false,
+      };
+
+      const response = await apiWithToken.post("/fo/rename/", data);
+
+      if (response.status === 200) {
+        showToast(response.data.responseText, "success");
+        fetchFolders();
+      } else {
+        showToast(response.data.responseText, "error");
+      }
+    } catch (error) {
+      console.error("Error renaming folder:", error);
+      showToast("An error occurred while renaming the folder.", "error");
+    } finally {
+      setLoading(false);
+      handleRenameDialogClose();
+    }
+  };
+
+  //move folder to bin
+  const handleBinFolder = async () => {
+    handleMoveBinDialogOpen();
+    if (selectedFolder) {
+      try {
+        const data = {
+          folder_id: selectedFolder.id,
+        };
+        const jsonData = JSON.stringify(data);
+
+        const response = await apiWithToken.post("/fo/bin/", jsonData);
+
+        console.log(response);
+
+        if (response.status === 200) {
+          showToast(response.data.responseText, "success");
+          fetchFolders();
+          handleMoveBinDialogClose();
+        } else {
+          showToast(response.data.responseText, "error");
+          handleMoveBinDialogClose();
+        }
+      } catch (error: any) {
+        const responseText = "An error occurred !!";
+        showToast(responseText, "error");
+        handleMoveBinDialogClose();
+      } finally {
+        setLoading(false);
+      }
+    }
+    handleMenuClose();
+  };
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
@@ -235,9 +360,77 @@ const Dashboard: React.FC = () => {
           onClose={handleMenuClose}
         >
           <MenuItem onClick={handleOpenFolder}>Open</MenuItem>
+          <MenuItem onClick={handleRenameDialogOpen}>Rename</MenuItem>
+          {/*<MenuItem onClick={handleStarFolder}>Star</MenuItem>*/}
+          <MenuItem onClick={handleBinFolder}>Move to bin</MenuItem>
           <MenuItem onClick={handleDeleteFolder}>Delete</MenuItem>
         </Menu>
       </Box>
+
+      {/* Dialog popup for deleting a file */}
+      <Dialog open={dialogOpen}>
+        <DialogContent>
+          <DialogContentText sx={{ color: "red", fontSize: "27px" }}>
+            <CircularProgress size={24} sx={{ color: "red" }} /> DELETING......
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog popup for moving file to bin */}
+      <Dialog open={dialogBinOpen}>
+        <DialogContent>
+          <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
+            <CircularProgress size={24} /> MOVING TO BIN......
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog popup for renaming folder */}
+      <Dialog
+        open={renameDialogOpen}
+        onClose={handleRenameDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Rename Folder</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="New Folder Name"
+            fullWidth
+            variant="outlined"
+            value={newFolderName}
+            onChange={(e) => setNewFolderName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRenameDialogClose} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleRenameFolder}
+            color="primary"
+            variant="contained"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={20} /> : "Rename"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ marginTop: "60px" }}
+      />
     </Box>
   );
 };

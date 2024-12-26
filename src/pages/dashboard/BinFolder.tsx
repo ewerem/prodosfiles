@@ -14,19 +14,18 @@ import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
-interface File {
+interface BinFolder {
   owner: string;
   name: string;
-  upload_date: string;
-  size: string;
+  created_at: string;
 }
 
-const Files: React.FC = () => {
+const BinFolder: React.FC = () => {
   const theme = useTheme();
   // const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<BinFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 //   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 //   const [selectedFolder, setSelectedFolder] = useState<File | null>(null);
@@ -43,15 +42,15 @@ const Files: React.FC = () => {
     email: localStorage.getItem("email") ?? "",
   };
 
-  const fetchFiles = async () => {
+  const fetchBinFolder = async () => {
     setLoading(true);
     try {
-      const response = await apiWithToken.get("/user-files/");
+      const response = await apiWithToken.get("/binned-f/");
 
       console.log("file-response", response);
 
       if (response.status === 200) {
-        const data: File[] = response.data;
+        const data: BinFolder[] = response.data.binned_folders;
         setFiles(data);
       } else {
         console.error("Failed to fetch folders: ", response.statusText);
@@ -66,7 +65,7 @@ const Files: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchFiles();
+    fetchBinFolder();
   }, []);
 
   return (
@@ -94,7 +93,7 @@ const Files: React.FC = () => {
             textAlign: "left",
           }}
         >
-          Files
+          Binned Folders
         </Typography>
         <Divider />
 
@@ -142,14 +141,6 @@ const Files: React.FC = () => {
                 <Typography
                   variant="subtitle1"
                   align="center"
-                  sx={{ fontSize: "11px", color: "purple" }}
-                >
-                  {file.size}
-                </Typography>
-
-                <Typography
-                  variant="subtitle1"
-                  align="center"
                   sx={{ fontSize: "10px" }}
                 >
                   {new Intl.DateTimeFormat("en-US", {
@@ -159,7 +150,7 @@ const Files: React.FC = () => {
                     hour: "2-digit",
                     minute: "2-digit",
                     second: "2-digit",
-                  }).format(new Date(file.upload_date))}
+                  }).format(new Date(file.created_at))}
                 </Typography>
 
                 {/* <IconButton
@@ -192,4 +183,4 @@ const Files: React.FC = () => {
   );
 };
 
-export default Files;
+export default BinFolder;
