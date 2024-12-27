@@ -44,6 +44,7 @@ const Dashboard: React.FC = () => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogStarOpen, setDialogStarOpen] = useState(false);
   const [dialogBinOpen, setDialogBinOpen] = useState(false);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
@@ -75,6 +76,15 @@ const Dashboard: React.FC = () => {
 
   const handleUploadDialogClose = () => {
     setDialogOpen(false);
+  };
+
+  const handleStarDialogOpen = () => {
+    setDialogStarOpen(true);
+    handleMenuClose();
+  };
+
+  const handleStarDialogClose = () => {
+    setDialogStarOpen(false);
   };
 
   const handleMoveBinDialogOpen = () => {
@@ -262,6 +272,39 @@ const Dashboard: React.FC = () => {
     handleMenuClose();
   };
 
+  //start a folder
+  const handleStarFolder = async () => {
+    handleStarDialogOpen();
+    if (selectedFolder) {
+      try {
+        const data = {
+          folder_id: selectedFolder.id,
+        };
+        const jsonData = JSON.stringify(data);
+
+        const response = await apiWithToken.post("/fo/star/", jsonData);
+
+        console.log(response);
+
+        if (response.status === 200) {
+          showToast(response.data.responseText, "success");
+          fetchFolders();
+          handleStarDialogClose();
+        } else {
+          showToast(response.data.responseText, "error");
+          handleStarDialogClose();
+        }
+      } catch (error: any) {
+        const responseText = "An error occurred !!";
+        showToast(responseText, "error");
+        handleStarDialogClose();
+      } finally {
+        setLoading(false);
+      }
+    }
+    handleMenuClose();
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
@@ -361,13 +404,13 @@ const Dashboard: React.FC = () => {
         >
           <MenuItem onClick={handleOpenFolder}>Open</MenuItem>
           <MenuItem onClick={handleRenameDialogOpen}>Rename</MenuItem>
-          {/*<MenuItem onClick={handleStarFolder}>Star</MenuItem>*/}
+          <MenuItem onClick={handleStarFolder}>Star</MenuItem>
           <MenuItem onClick={handleBinFolder}>Move to bin</MenuItem>
           <MenuItem onClick={handleDeleteFolder}>Delete</MenuItem>
         </Menu>
       </Box>
 
-      {/* Dialog popup for deleting a file */}
+      {/* Dialog popup for deleting a folder */}
       <Dialog open={dialogOpen}>
         <DialogContent>
           <DialogContentText sx={{ color: "red", fontSize: "27px" }}>
@@ -376,11 +419,20 @@ const Dashboard: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog popup for moving file to bin */}
+      {/* Dialog popup for moving folder to bin */}
       <Dialog open={dialogBinOpen}>
         <DialogContent>
           <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
             <CircularProgress size={24} /> MOVING TO BIN......
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog popup for starring a folder */}
+      <Dialog open={dialogStarOpen}>
+        <DialogContent>
+          <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
+            <CircularProgress size={24} /> PLEASE WAIT...
           </DialogContentText>
         </DialogContent>
       </Dialog>

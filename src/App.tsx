@@ -23,7 +23,8 @@ import "react-toastify/dist/ReactToastify.css";
 import FolderPage from "./pages/dashboard/Folder";
 import FilesPage from "./pages/dashboard/Files";
 import BinFolderPage from "./pages/dashboard/BinFolder";
-
+import BinFilePage from "./pages/dashboard/BinFiles";
+import StarPage from "./pages/dashboard/Star";
 
 const theme = createTheme(); // Create a Material-UI theme
 
@@ -47,7 +48,8 @@ function App() {
           <Route path="/folder/:name" element={<FolderPage />} />
           <Route path="/files" element={<FilesPage />} />
           <Route path="/bin-folder" element={<BinFolderPage />} />
-
+          <Route path="/bin-file" element={<BinFilePage />} />
+          <Route path="/star" element={<StarPage />} />
         </Routes>
       </Router>
     </ThemeProvider>

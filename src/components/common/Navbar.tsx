@@ -34,6 +34,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import apiForFilesUpload from "../../utils/apiForFilesUpload";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import StarIcon from "@mui/icons-material/Star";
+
 
 interface NavbarProps {
   onLogout: () => void;
@@ -91,6 +94,14 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
 
   const handleClickBinFolders = () => {
     navigate("/bin-folder");
+  };
+
+  const handleClickBinFiles = () => {
+    navigate("/bin-file");
+  };
+
+  const handleClickStar = () => {
+    navigate("/star");
   };
 
   const handleUploadDialogOpen = () => {
@@ -232,23 +243,40 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
                   />
                 </ListItem>
               </MenuItem>
+
               <MenuItem onClick={handleClickFolder}>
                 <ListItemIcon>
                   <Folder />
                 </ListItemIcon>
                 <ListItemText primary="Folders" />
               </MenuItem>
+
               <MenuItem onClick={handleClickFiles}>
                 <ListItemIcon>
                   <FileOpen />
                 </ListItemIcon>
                 <ListItemText primary="Files" />
               </MenuItem>
+
+              <MenuItem onClick={handleClickStar}>
+                <ListItemIcon>
+                  <StarIcon />
+                </ListItemIcon>
+                <ListItemText primary="Star" />
+              </MenuItem>
+
               <MenuItem onClick={handleClickBinFolders}>
                 <ListItemIcon>
                   <RestoreFromTrash />
                 </ListItemIcon>
-                <ListItemText primary="Recycle Bin" />
+                <ListItemText primary="Binned Folder" />
+              </MenuItem>
+
+              <MenuItem onClick={handleClickBinFiles}>
+                <ListItemIcon>
+                  <DeleteOutlineIcon />
+                </ListItemIcon>
+                <ListItemText primary="Binned File" />
               </MenuItem>
             </Menu>
           </Box>
