@@ -14,18 +14,18 @@ import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
-interface BinFolder {
+interface BinFiles {
   owner: string;
   name: string;
   created_at: string;
 }
 
-const BinFolder: React.FC = () => {
+const BinFiles: React.FC = () => {
   const theme = useTheme();
   // const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [files, setFiles] = useState<BinFolder[]>([]);
+  const [files, setFiles] = useState<BinFiles[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 //   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 //   const [selectedFolder, setSelectedFolder] = useState<File | null>(null);
@@ -48,9 +48,10 @@ const BinFolder: React.FC = () => {
       const response = await apiWithToken.get("/binned-f/");
 
       console.log("file-response", response);
+      return
 
       if (response.status === 200) {
-        const data: BinFolder[] = response.data.binned_folders;
+        const data: BinFiles[] = response.data.binned_folders;
         setFiles(data);
       } else {
         console.error("Failed to fetch folders: ", response.statusText);
@@ -93,7 +94,7 @@ const BinFolder: React.FC = () => {
             textAlign: "left",
           }}
         >
-          Binned Folders
+          Binned Files
         </Typography>
         <Divider />
 
@@ -166,7 +167,7 @@ const BinFolder: React.FC = () => {
           <Box>
             <InsertDriveFileIcon fontSize="large" color="disabled" />
             <Typography variant="h6" color="textSecondary">
-              No Binned fiolders found
+              No Binned files found
             </Typography>
           </Box>
         )}
@@ -183,4 +184,4 @@ const BinFolder: React.FC = () => {
   );
 };
 
-export default BinFolder;
+export default BinFiles;

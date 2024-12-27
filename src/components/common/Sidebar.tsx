@@ -31,6 +31,8 @@ import { ToastContainer, toast } from "react-toastify";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import apiForFilesUpload from "../../utils/apiForFilesUpload";
 import { useNavigate } from "react-router-dom";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import StarIcon from "@mui/icons-material/Star";
 
 interface SidebarProps {
   // onUploadFile: () => void;
@@ -62,6 +64,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
 
   const handleClickBinFolders = () => {
     navigate("/bin-folder");
+  };
+
+  const handleClickBinFiles = () => {
+    navigate("/bin-file");
+  };
+
+  const handleClickStar = () => {
+    navigate("/star");
   };
 
   const handleMenuClose = () => {
@@ -245,11 +255,25 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
             <ListItemText primary="Files" />
           </ListItem>
 
+          <ListItem onClick={handleClickStar}>
+            <ListItemIcon>
+              <StarIcon />
+            </ListItemIcon>
+            <ListItemText primary="Star" />
+          </ListItem>
+
           <ListItem onClick={handleClickBinFolders}>
             <ListItemIcon>
               <RestoreFromTrash />
             </ListItemIcon>
-            <ListItemText primary="Recycle Bin" />
+            <ListItemText primary="Binned Folder" />
+          </ListItem>
+
+          <ListItem onClick={handleClickBinFiles}>
+            <ListItemIcon>
+              <DeleteOutlineIcon />
+            </ListItemIcon>
+            <ListItemText primary="Binned File" />
           </ListItem>
 
           <ListItem onClick={onLogout}>
