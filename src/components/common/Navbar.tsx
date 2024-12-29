@@ -34,9 +34,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import apiForFilesUpload from "../../utils/apiForFilesUpload";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import StarIcon from "@mui/icons-material/Star";
-
 
 interface NavbarProps {
   onLogout: () => void;
@@ -100,8 +99,12 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
     navigate("/bin-file");
   };
 
-  const handleClickStar = () => {
-    navigate("/star");
+  const handleClickStarFile = () => {
+    navigate("/star-file");
+  };
+
+  const handleClickStarFolder = () => {
+    navigate("/star-folder");
   };
 
   const handleUploadDialogOpen = () => {
@@ -258,11 +261,18 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
                 <ListItemText primary="Files" />
               </MenuItem>
 
-              <MenuItem onClick={handleClickStar}>
+              <MenuItem onClick={handleClickStarFile}>
                 <ListItemIcon>
                   <StarIcon />
                 </ListItemIcon>
-                <ListItemText primary="Star" />
+                <ListItemText primary="Star Files" />
+              </MenuItem>
+
+              <MenuItem onClick={handleClickStarFolder}>
+                <ListItemIcon>
+                  <StarIcon />
+                </ListItemIcon>
+                <ListItemText primary="Star Folders" />
               </MenuItem>
 
               <MenuItem onClick={handleClickBinFolders}>

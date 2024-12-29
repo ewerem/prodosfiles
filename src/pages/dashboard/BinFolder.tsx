@@ -12,7 +12,7 @@ import Navbar from "../../components/common/Navbar";
 import Sidebar from "../../components/common/Sidebar";
 import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import FolderIcon from "@mui/icons-material/Folder";
 
 interface BinFolder {
   owner: string;
@@ -122,7 +122,7 @@ const BinFolder: React.FC = () => {
                   overflow: "hidden",
                 }}
               >
-                <InsertDriveFileIcon fontSize="large" color="primary" />
+                <FolderIcon fontSize="large" color="primary" />
                 <Typography
                   variant="subtitle1"
                   align="center"
@@ -164,7 +164,7 @@ const BinFolder: React.FC = () => {
           </Box>
         ) : (
           <Box>
-            <InsertDriveFileIcon fontSize="large" color="disabled" />
+            <FolderIcon fontSize="large" color="disabled" />
             <Typography variant="h6" color="textSecondary">
               No Binned fiolders found
             </Typography>
