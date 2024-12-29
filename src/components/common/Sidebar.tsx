@@ -70,8 +70,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
     navigate("/bin-file");
   };
 
-  const handleClickStar = () => {
-    navigate("/star");
+  const handleClickStarFile = () => {
+    navigate("/star-file");
+  };
+
+  const handleClickStarFolder = () => {
+    navigate("/star-folder");
   };
 
   const handleMenuClose = () => {
@@ -255,11 +259,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
             <ListItemText primary="Files" />
           </ListItem>
 
-          <ListItem onClick={handleClickStar}>
+          <ListItem onClick={handleClickStarFile}>
             <ListItemIcon>
               <StarIcon />
             </ListItemIcon>
-            <ListItemText primary="Star" />
+            <ListItemText primary="Star Files" />
+          </ListItem>
+
+          <ListItem onClick={handleClickStarFolder}>
+            <ListItemIcon>
+              <StarIcon />
+            </ListItemIcon>
+            <ListItemText primary="Star Folders" />
           </ListItem>
 
           <ListItem onClick={handleClickBinFolders}>

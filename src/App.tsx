@@ -24,7 +24,8 @@ import FolderPage from "./pages/dashboard/Folder";
 import FilesPage from "./pages/dashboard/Files";
 import BinFolderPage from "./pages/dashboard/BinFolder";
 import BinFilePage from "./pages/dashboard/BinFiles";
-import StarPage from "./pages/dashboard/Star";
+import StarFolderPage from "./pages/dashboard/StarFolder";
+import StarFilePage from "./pages/dashboard/StarFile";
 
 const theme = createTheme(); // Create a Material-UI theme
 
@@ -49,7 +50,8 @@ function App() {
           <Route path="/files" element={<FilesPage />} />
           <Route path="/bin-folder" element={<BinFolderPage />} />
           <Route path="/bin-file" element={<BinFilePage />} />
-          <Route path="/star" element={<StarPage />} />
+          <Route path="/star-folder" element={<StarFolderPage />} />
+          <Route path="/star-file" element={<StarFilePage />} />
         </Routes>
       </Router>
     </ThemeProvider>

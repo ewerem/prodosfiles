@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://proodoosfiles.onrender.com/api",
+  baseURL: "http://api.proodosfiles.com/api",
   headers: {
     "Content-Type": "application/json",
   },

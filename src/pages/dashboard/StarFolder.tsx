@@ -12,15 +12,16 @@ import Navbar from "../../components/common/Navbar";
 import Sidebar from "../../components/common/Sidebar";
 import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import FolderIcon from "@mui/icons-material/Folder";
 
 interface StarF {
+  id: string;
   owner: string;
   name: string;
   created_at: string;
 }
 
-const Star: React.FC = () => {
+const StarFolder: React.FC = () => {
   const theme = useTheme();
   // const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -48,10 +49,9 @@ const Star: React.FC = () => {
       const response = await apiWithToken.get("/starred-f/");
 
       console.log("file-response", response);
-      return
 
       if (response.status === 200) {
-        const data: StarF[] = response.data.binned_folders;
+        const data: StarF[] = response.data.my_starred_folders;
         setFiles(data);
       } else {
         console.error("Failed to fetch folders: ", response.statusText);
@@ -94,7 +94,7 @@ const Star: React.FC = () => {
             textAlign: "left",
           }}
         >
-          Starred F
+          Starred Folders
         </Typography>
         <Divider />
 
@@ -110,7 +110,7 @@ const Star: React.FC = () => {
           >
             {files.map((file) => (
               <Box
-                key={file.name}
+                key={file.id}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -123,7 +123,7 @@ const Star: React.FC = () => {
                   overflow: "hidden",
                 }}
               >
-                <InsertDriveFileIcon fontSize="large" color="primary" />
+                <FolderIcon fontSize="large" color="primary" />
                 <Typography
                   variant="subtitle1"
                   align="center"
@@ -165,9 +165,9 @@ const Star: React.FC = () => {
           </Box>
         ) : (
           <Box>
-            <InsertDriveFileIcon fontSize="large" color="disabled" />
+            <FolderIcon fontSize="large" color="disabled" />
             <Typography variant="h6" color="textSecondary">
-              No Star Items found
+              No Star Folders Found
             </Typography>
           </Box>
         )}
@@ -184,4 +184,4 @@ const Star: React.FC = () => {
   );
 };
 
-export default Star;
+export default StarFolder;

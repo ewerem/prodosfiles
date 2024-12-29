@@ -272,7 +272,7 @@ const Dashboard: React.FC = () => {
     handleMenuClose();
   };
 
-  //start a folder
+  //star a folder
   const handleStarFolder = async () => {
     handleStarDialogOpen();
     if (selectedFolder) {

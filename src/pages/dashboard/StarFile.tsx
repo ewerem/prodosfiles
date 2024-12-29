@@ -14,19 +14,19 @@ import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
-interface BinFiles {
-  id: string;
+interface StarF {
+    id: string;
   owner: string;
   name: string;
   size: string;
 }
 
-const BinFiles: React.FC = () => {
+const StarFile: React.FC = () => {
   const theme = useTheme();
   // const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [files, setFiles] = useState<BinFiles[]>([]);
+  const [files, setFiles] = useState<StarF[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   //   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   //   const [selectedFolder, setSelectedFolder] = useState<File | null>(null);
@@ -43,22 +43,22 @@ const BinFiles: React.FC = () => {
     email: localStorage.getItem("email") ?? "",
   };
 
-  const fetchBinFolder = async () => {
+  const fetchStarF = async () => {
     setLoading(true);
     try {
-      const response = await apiWithToken.get("/binned-f/");
+      const response = await apiWithToken.get("/starred-f/");
 
       console.log("file-response", response);
 
       if (response.status === 200) {
-        const data: BinFiles[] = response.data.binned_files;
+        const data: StarF[] = response.data.my_starred_files;
         setFiles(data);
       } else {
-        console.error("Failed to fetch folders: ", response.statusText);
+        console.error("Failed to fetch star files: ", response.statusText);
         setFiles([]);
       }
     } catch (error) {
-      console.error("Error fetching folders:", error);
+      console.error("Error fetching star files:", error);
       setFiles([]);
     } finally {
       setLoading(false);
@@ -66,7 +66,7 @@ const BinFiles: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchBinFolder();
+    fetchStarF();
   }, []);
 
   return (
@@ -94,7 +94,7 @@ const BinFiles: React.FC = () => {
             textAlign: "left",
           }}
         >
-          Binned Files
+          Starred Files
         </Typography>
         <Divider />
 
@@ -144,7 +144,7 @@ const BinFiles: React.FC = () => {
                   align="center"
                   sx={{ fontSize: "10px" }}
                 >
-                  {file.size}
+                    {file.size}
                 </Typography>
 
                 {/* <IconButton
@@ -160,7 +160,7 @@ const BinFiles: React.FC = () => {
           <Box>
             <InsertDriveFileIcon fontSize="large" color="disabled" />
             <Typography variant="h6" color="textSecondary">
-              No Binned files found
+              No Star Files Found
             </Typography>
           </Box>
         )}
@@ -177,4 +177,4 @@ const BinFiles: React.FC = () => {
   );
 };
 
-export default BinFiles;
+export default StarFile;
