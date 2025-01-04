@@ -48,7 +48,7 @@ interface LoginUserData {
 
 export const loginUser = async (
   data: LoginUserData
-): Promise<ApiResponse<{ token: string, username: string }>> => {
+): Promise<ApiResponse<{ token: string; username: string }>> => {
   try {
     console.log("Request data: ", data);
     const response = await apiClient.post("/login/", data);
@@ -129,6 +129,37 @@ export const ResetPassUser = async (
     // Extract responseText if available
     const responseText =
       error.response?.data?.responseText?.[0] || "An error occurred !!";
+
+    return {
+      success: false,
+      message: responseText,
+    };
+  }
+};
+
+// Function Resent Confirmation Link
+interface ResendConfirmationData {
+  email: string;
+}
+
+export const ResendConfirmation = async (
+  data: ResendConfirmationData
+): Promise<ApiResponse<{ token: string }>> => {
+  try {
+    console.log("Request data: ", data);
+    const response = await apiClient.post("/resender/", data);
+
+    // console.log("Response data: ", response.data);
+    return {
+      success: true,
+      message: "Successful",
+      data: response.data,
+    };
+  } catch (error: any) {
+    // console.error("Login error: ", error);
+    // Extract responseText if available
+    const responseText =
+      error.response?.data?.responseText || "An error occurred !!";
 
     return {
       success: false,

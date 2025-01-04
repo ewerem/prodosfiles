@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   ListItem,
   ListItemIcon,
@@ -38,11 +38,18 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import StarIcon from "@mui/icons-material/Star";
 
 interface NavbarProps {
+  refreshFolders: () => void;
   onLogout: () => void;
   user: { username: string; email: string };
+  folderId?: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  refreshFolders,
+  onLogout,
+  user,
+  folderId,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [breadcrumbMenuAnchor, setBreadcrumbMenuAnchor] =
     useState<null | HTMLElement>(null);
@@ -141,9 +148,14 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
     setLoading(true);
 
     try {
-      const data = JSON.stringify({
-        folder_name: folderName.trim(),
-      });
+      const data = folderId
+        ? JSON.stringify({
+            folder_name: folderName.trim(),
+            parent_folder_id: folderId,
+          })
+        : JSON.stringify({
+            folder_name: folderName.trim(),
+          });
 
       const response = await apiWithToken.post("/create-f/", data);
 
@@ -156,6 +168,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
         setFolderName("");
         setError("");
         setLoading(false);
+        refreshFolders(); //refresh the folders
       }
     } catch (error: any) {
       const responseText =
@@ -200,6 +213,14 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, user }) => {
       showToast("An error occurred !!", "error");
     }
   };
+
+  //create
+  useEffect(() => {
+    if (folderId) {
+      console.log("Current Folder ID in Navbar:", folderId);
+      // Do something with the folder ID
+    }
+  }, [folderId]);
 
   return (
     <AppBar

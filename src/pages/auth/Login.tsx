@@ -29,6 +29,10 @@ const Login: React.FC = () => {
     navigate("/forgot-password");
   };
 
+  const handleNavigateResend = () => {
+    navigate("/resend-confirmation");
+  };
+
   //onload popup
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
@@ -87,7 +91,7 @@ const Login: React.FC = () => {
         alignItems="center"
         minHeight="100vh"
         sx={{
-          marginTop: { xs: '-13rem', sm: '0' },
+          marginTop: { xs: "-13rem", sm: "0" },
         }}
       >
         <Paper
@@ -154,7 +158,20 @@ const Login: React.FC = () => {
                 fontWeight: "bold",
               }}
             >
-              Click here
+              Click Here
+            </span>
+          </Typography>
+
+          <Typography variant="body2" textAlign="center" marginTop="1.5rem">
+            <span
+              onClick={handleNavigateResend}
+              style={{
+                color: "#004ba0",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Resend Confirmation link
             </span>
           </Typography>
         </Paper>

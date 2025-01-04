@@ -71,8 +71,8 @@ const BinFolder: React.FC = () => {
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
-      <Navbar onLogout={handleLogout} user={user} />
-      {!isSmallScreen && <Sidebar onLogout={handleLogout} />}
+      <Navbar onLogout={handleLogout} user={user} refreshFolders={fetchBinFolder}/>
+      {!isSmallScreen && <Sidebar onLogout={handleLogout} refreshFolders={fetchBinFolder}/>}
       <Box
         component="main"
         sx={{

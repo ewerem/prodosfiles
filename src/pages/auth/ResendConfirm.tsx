@@ -6,20 +6,18 @@ import {
   Typography,
   Stack,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
+  DialogTitle,
   Button,
 } from "@mui/material";
-import RegisterForm from "../../components/auth/RegisterForm";
+import ResendConfirmForm from "../../components/auth/ResendConfirmForm";
 import { Info } from "@mui/icons-material";
-import { ToastContainer, toast } from "react-toastify"; // Import react-toastify
+import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-
-const Register: React.FC = () => {
-  // State to manage loading, error, success messages, and dialog visibility
+const ResendConfirm: React.FC = () => {
   const setLoading = React.useState(false)[1];
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -30,16 +28,12 @@ const Register: React.FC = () => {
     navigate("/login");
   };
 
-  const handleNavigateResend = () => {
-    navigate("/resend-confirmation");
-  };
-
-  // Function to show toast notifications
+  // Show toast notifications based on success or error
   const showToast = (message: string, type: "success" | "error") => {
     if (type === "success") {
-      toast.success(message); // Success toast
+      toast.success(message);
     } else {
-      toast.error(message); // Error toast
+      toast.error(message);
     }
   };
 
@@ -63,7 +57,7 @@ const Register: React.FC = () => {
         alignItems="center"
         minHeight="100vh"
         sx={{
-          marginTop: { xs: '-8rem', sm: '0' },
+          marginTop: { xs: "-13rem", sm: "0" },
         }}
       >
         <Paper
@@ -76,18 +70,18 @@ const Register: React.FC = () => {
               sx={{ fontWeight: "bold" }}
               marginBottom="1.5rem"
             >
-              Register
+              Resend Confirmation Link
             </Typography>
             <Stack direction="row" alignItems="center" spacing={0}>
               <Info sx={{ color: "#ff9800" }} />
               <Typography variant="body1" sx={{ color: "#000000" }}>
-                Please, all fields are required.
+                Please enter your email address.
               </Typography>
             </Stack>
           </Box>
 
-          {/* Pass showToast and other props to RegisterForm */}
-          <RegisterForm
+          {/* Pass the necessary props to the ForgetForm */}
+          <ResendConfirmForm
             showToast={showToast}
             setLoading={setLoading}
             setError={setError}
@@ -100,7 +94,14 @@ const Register: React.FC = () => {
             </Typography>
           )}
 
-          <Typography variant="body2" textAlign="center" marginTop="1.5rem">
+          {success && (
+            <Typography color="primary" textAlign="center" mt={2}>
+              {success}
+            </Typography>
+          )}
+
+          <Typography variant="body1" textAlign="center" marginTop="1.5rem">
+            Go back to{" "}
             <span
               onClick={handleNavigateLogin}
               style={{
@@ -109,36 +110,20 @@ const Register: React.FC = () => {
                 fontWeight: "bold",
               }}
             >
-              Login here
-            </span>{" "}
-            if you have registered before.
-          </Typography>
-
-          <Typography variant="body2" textAlign="center" marginTop="1.5rem">
-            <span
-              onClick={handleNavigateResend}
-              style={{
-                color: "#004ba0",
-                textDecoration: "none",
-                fontWeight: "bold",
-              }}
-            >
-              Resend Confirmation link
+              Login
             </span>
           </Typography>
-
         </Paper>
       </Box>
 
       {/* Dialog popup for registration success */}
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle sx={{ color: "green", fontWeight: "bold" }}>
-          Registration Successful
+          Successful Operation
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ color: "black" }}>
-            Registration successful. Please check your email to verify your
-            account.
+            A Confirmation link has been sent to your mail. Thanks.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -148,10 +133,10 @@ const Register: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      {/* ToastContainer for toast notifications */}
+      {/* Add ToastContainer for toast notifications */}
       <ToastContainer />
     </Container>
   );
 };
 
-export default Register;
+export default ResendConfirm;
