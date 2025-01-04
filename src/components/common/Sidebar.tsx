@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Drawer,
   List,
@@ -35,12 +35,16 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import StarIcon from "@mui/icons-material/Star";
 
 interface SidebarProps {
-  // onUploadFile: () => void;
+  refreshFolders: () => void;
   onLogout: () => void;
+  folderId?: string;
 }
 
-//add onUploadFile if being used
-const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  refreshFolders,
+  onLogout,
+  folderId,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -128,9 +132,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
     setLoading(true);
 
     try {
-      const data = JSON.stringify({
-        folder_name: folderName.trim(),
-      });
+      const data = folderId
+        ? JSON.stringify({
+            folder_name: folderName.trim(),
+            parent_folder_id: folderId,
+          })
+        : JSON.stringify({
+            folder_name: folderName.trim(),
+          });
 
       const response = await apiWithToken.post("/create-f/", data);
 
@@ -143,6 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
         setFolderName("");
         setError("");
         setLoading(false);
+        refreshFolders(); //refresh the folders
       }
     } catch (error: any) {
       const responseText =
@@ -188,6 +198,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
     }
   };
 
+  useEffect(() => {
+    if (folderId) {
+      console.log("Current Folder ID in Sidebar:", folderId);
+      // Do something with the folder ID
+    }
+  }, [folderId]);
+
   return (
     <Drawer variant="permanent" anchor="left">
       <Box sx={{ width: 250, padding: "1rem", marginTop: "4rem" }}>
@@ -223,7 +240,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              // onUploadFile();
               handleMenuClose();
             }}
           >

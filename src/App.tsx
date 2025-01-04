@@ -16,6 +16,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import EmailVerificationSuccess from "./pages/auth/EmailVerificationSuccess";
 import ForgotPass from "./pages/auth/ForgetPass";
+import ResendConfirm from "./pages/auth/ResendConfirm";
 import ResetPass from "./pages/auth/ResetPass";
 import Dashboard from "./pages/dashboard/Dashboard";
 
@@ -43,6 +44,7 @@ function App() {
             element={<EmailVerificationSuccess />}
           />
           <Route path="/forgot-password" element={<ForgotPass />} />
+          <Route path="/resend-confirmation" element={<ResendConfirm />} />
           <Route path="/reset-password" element={<ResetPass />} />
 
           <Route path="/dashboard" element={<Dashboard />} />

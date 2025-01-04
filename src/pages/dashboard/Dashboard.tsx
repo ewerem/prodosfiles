@@ -308,8 +308,8 @@ const Dashboard: React.FC = () => {
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
-      <Navbar onLogout={handleLogout} user={user} />
-      {!isSmallScreen && <Sidebar onLogout={handleLogout} />}
+      <Navbar onLogout={handleLogout} user={user} refreshFolders={fetchFolders} />
+      {!isSmallScreen && <Sidebar onLogout={handleLogout} refreshFolders={fetchFolders} />}
       <Box
         component="main"
         sx={{
