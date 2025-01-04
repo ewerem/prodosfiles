@@ -72,8 +72,8 @@ const StarFolder: React.FC = () => {
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
-      <Navbar onLogout={handleLogout} user={user} />
-      {!isSmallScreen && <Sidebar onLogout={handleLogout} />}
+      <Navbar onLogout={handleLogout} user={user} refreshFolders={fetchStarF} />
+      {!isSmallScreen && <Sidebar onLogout={handleLogout} refreshFolders={fetchStarF} />}
       <Box
         component="main"
         sx={{

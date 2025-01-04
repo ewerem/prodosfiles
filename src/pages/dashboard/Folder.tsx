@@ -39,7 +39,7 @@ const FolderPage: React.FC = () => {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
+  // const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null);
 
   const handleNavigateLogout = () => {
     navigate("/login");
@@ -93,15 +93,15 @@ const FolderPage: React.FC = () => {
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
-    folder: Folder
+    // folder: Folder
   ) => {
     setMenuAnchor(event.currentTarget);
-    setSelectedFolder(folder);
+    // setSelectedFolder(folder);
   };
 
   const handleMenuClose = () => {
     setMenuAnchor(null);
-    setSelectedFolder(null);
+    // setSelectedFolder(null);
   };
 
   return (
@@ -194,7 +194,7 @@ const FolderPage: React.FC = () => {
                 </Typography>
 
                 <IconButton
-                  onClick={(event) => handleMenuOpen(event, folder)}
+                  onClick={(event) => handleMenuOpen(event)} //add folder later
                   sx={{ position: "absolute", top: "5px", right: "5px" }}
                 >
                   <MoreVertIcon />
