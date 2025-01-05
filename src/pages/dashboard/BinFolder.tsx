@@ -6,6 +6,12 @@ import {
   useMediaQuery,
   Typography,
   CircularProgress,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  IconButton,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Navbar from "../../components/common/Navbar";
@@ -13,11 +19,14 @@ import Sidebar from "../../components/common/Sidebar";
 import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
 import FolderIcon from "@mui/icons-material/Folder";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { ToastContainer, toast } from "react-toastify";
 
 interface BinFolder {
   owner: string;
   name: string;
   created_at: string;
+  id: string;
 }
 
 const BinFolder: React.FC = () => {
@@ -25,10 +34,11 @@ const BinFolder: React.FC = () => {
   // const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [files, setFiles] = useState<BinFolder[]>([]);
+  const [folders, setFolders] = useState<BinFolder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-//   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-//   const [selectedFolder, setSelectedFolder] = useState<File | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [selectedFolder, setSelectedFolder] = useState<BinFolder | null>(null);
+  const [dialogBinOpen, setDialogBinOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -42,6 +52,39 @@ const BinFolder: React.FC = () => {
     email: localStorage.getItem("email") ?? "",
   };
 
+  // Show toast notifications based on success or error
+  const showToast = (message: string, type: "success" | "error") => {
+    if (type === "success") {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
+
+  const handleRestoreDialogOpen = () => {
+    setDialogBinOpen(true);
+    handleMenuClose();
+  };
+
+  const handleRestoreDialogClose = () => {
+    setDialogBinOpen(false);
+  };
+
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    folder: BinFolder
+  ) => {
+    setMenuAnchor(event.currentTarget);
+    setSelectedFolder(folder);
+  };
+
+  //with making setSelectedFolder = null
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setSelectedFolder(null);
+  };
+
+  //fetch bin folders
   const fetchBinFolder = async () => {
     setLoading(true);
     try {
@@ -51,17 +94,50 @@ const BinFolder: React.FC = () => {
 
       if (response.status === 200) {
         const data: BinFolder[] = response.data.binned_folders;
-        setFiles(data);
+        setFolders(data);
       } else {
         console.error("Failed to fetch folders: ", response.statusText);
-        setFiles([]);
+        setFolders([]);
       }
     } catch (error) {
       console.error("Error fetching folders:", error);
-      setFiles([]);
+      setFolders([]);
     } finally {
       setLoading(false);
     }
+  };
+
+  //restore folder
+  const handleRestoreFolder = async () => {
+    handleRestoreDialogOpen();
+    if (selectedFolder) {
+      try {
+        const data = {
+          folder_id: selectedFolder.id,
+        };
+        const jsonData = JSON.stringify(data);
+
+        const response = await apiWithToken.post("/fo/bin/", jsonData);
+
+        console.log(response);
+
+        if (response.status === 200) {
+          showToast(response.data.responseText, "success");
+          fetchBinFolder();
+          handleRestoreDialogClose();
+        } else {
+          showToast(response.data.responseText, "error");
+          handleRestoreDialogClose();
+        }
+      } catch (error: any) {
+        const responseText = "An error occurred !!";
+        showToast(responseText, "error");
+        handleRestoreDialogClose();
+      } finally {
+        setLoading(false);
+      }
+    }
+    handleMenuClose();
   };
 
   useEffect(() => {
@@ -71,8 +147,14 @@ const BinFolder: React.FC = () => {
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
-      <Navbar onLogout={handleLogout} user={user} refreshFolders={fetchBinFolder}/>
-      {!isSmallScreen && <Sidebar onLogout={handleLogout} refreshFolders={fetchBinFolder}/>}
+      <Navbar
+        onLogout={handleLogout}
+        user={user}
+        refreshFolders={fetchBinFolder}
+      />
+      {!isSmallScreen && (
+        <Sidebar onLogout={handleLogout} refreshFolders={fetchBinFolder} />
+      )}
       <Box
         component="main"
         sx={{
@@ -99,7 +181,7 @@ const BinFolder: React.FC = () => {
 
         {loading ? (
           <CircularProgress />
-        ) : files.length > 0 ? (
+        ) : folders.length > 0 ? (
           <Box
             sx={{
               display: "flex",
@@ -107,9 +189,9 @@ const BinFolder: React.FC = () => {
               gap: 2,
             }}
           >
-            {files.map((file) => (
+            {folders.map((folder) => (
               <Box
-                key={file.name}
+                key={folder.name}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -135,7 +217,7 @@ const BinFolder: React.FC = () => {
                     textAlign: "center",
                   }}
                 >
-                  {file.name}
+                  {folder.name}
                 </Typography>
 
                 <Typography
@@ -150,15 +232,15 @@ const BinFolder: React.FC = () => {
                     hour: "2-digit",
                     minute: "2-digit",
                     second: "2-digit",
-                  }).format(new Date(file.created_at))}
+                  }).format(new Date(folder.created_at))}
                 </Typography>
 
-                {/* <IconButton
+                <IconButton
                   onClick={(event) => handleMenuOpen(event, folder)}
                   sx={{ position: "absolute", top: "5px", right: "5px" }}
                 >
                   <MoreVertIcon />
-                </IconButton> */}
+                </IconButton>
               </Box>
             ))}
           </Box>
@@ -170,15 +252,36 @@ const BinFolder: React.FC = () => {
             </Typography>
           </Box>
         )}
-        {/* <Menu
+        <Menu
           anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleOpenFolder}>Open</MenuItem>
-          <MenuItem onClick={handleDeleteFolder}>Delete</MenuItem>
-        </Menu> */}
+          <MenuItem onClick={handleRestoreFolder}>Restore</MenuItem>
+        </Menu>
       </Box>
+
+      {/* Dialog popup for moving folder to bin */}
+      <Dialog open={dialogBinOpen}>
+        <DialogContent>
+          <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
+            <CircularProgress size={24} /> RESTORING FOLDER..
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ marginTop: "60px" }}
+      />
     </Box>
   );
 };
