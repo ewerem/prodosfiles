@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiWithToken = axios.create({
-  baseURL: "http://api.proodosfiles.com/api",
+  baseURL: "https://api.proodosfiles.com/api",
   headers: {
     "Content-Type": "application/json",
   },

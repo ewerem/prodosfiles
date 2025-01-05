@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiForFilesUpload = axios.create({
-  baseURL: "http://api.proodosfiles.com/api",
+  baseURL: "https://api.proodosfiles.com/api",
   headers: {
     "Content-Type": "multipart/form-data",
   },
