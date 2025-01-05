@@ -46,7 +46,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/resend-confirmation" element={<ResendConfirm />} />
           <Route path="/reset-password" element={<ResetPass />} />
-
+ 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/folder/:name" element={<FolderPage />} />
           <Route path="/files" element={<FilesPage />} />
