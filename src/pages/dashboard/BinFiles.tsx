@@ -6,6 +6,12 @@ import {
   useMediaQuery,
   Typography,
   CircularProgress,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  IconButton,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Navbar from "../../components/common/Navbar";
@@ -13,6 +19,8 @@ import Sidebar from "../../components/common/Sidebar";
 import apiWithToken from "../../utils/apiWithToken";
 // import { useNavigate } from "react-router-dom";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { ToastContainer, toast } from "react-toastify";
 
 interface BinFiles {
   id: string;
@@ -28,8 +36,9 @@ const BinFiles: React.FC = () => {
 
   const [files, setFiles] = useState<BinFiles[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  //   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  //   const [selectedFolder, setSelectedFolder] = useState<File | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [selectedFile, setSelectedFile] = useState<BinFiles | null>(null);
+  const [dialogBinOpen, setDialogBinOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -43,6 +52,39 @@ const BinFiles: React.FC = () => {
     email: localStorage.getItem("email") ?? "",
   };
 
+  // Show toast notifications based on success or error
+  const showToast = (message: string, type: "success" | "error") => {
+    if (type === "success") {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
+
+  const handleRestoreDialogOpen = () => {
+    setDialogBinOpen(true);
+    handleMenuClose();
+  };
+
+  const handleRestoreDialogClose = () => {
+    setDialogBinOpen(false);
+  };
+
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    file: BinFiles
+  ) => {
+    setMenuAnchor(event.currentTarget);
+    setSelectedFile(file);
+  };
+
+  //with making setSelectedFolder = null
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setSelectedFile(null);
+  };
+
+  //fetch all files
   const fetchBinFolder = async () => {
     setLoading(true);
     try {
@@ -63,6 +105,39 @@ const BinFiles: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  //restore file
+  const handleRestoreFile = async () => {
+    handleRestoreDialogOpen();
+    if (selectedFile) {
+      try {
+        const data = {
+          file_id: selectedFile.id,
+        };
+        const jsonData = JSON.stringify(data);
+
+        const response = await apiWithToken.post("/fi/bin/", jsonData);
+
+        console.log(response);
+
+        if (response.status === 200) {
+          showToast(response.data.responseText, "success");
+          fetchBinFolder();
+          handleRestoreDialogClose();
+        } else {
+          showToast(response.data.responseText, "error");
+          handleRestoreDialogClose();
+        }
+      } catch (error: any) {
+        const responseText = "An error occurred !!";
+        showToast(responseText, "error");
+        handleRestoreDialogClose();
+      } finally {
+        setLoading(false);
+      }
+    }
+    handleMenuClose();
   };
 
   useEffect(() => {
@@ -153,12 +228,12 @@ const BinFiles: React.FC = () => {
                   {file.size}
                 </Typography>
 
-                {/* <IconButton
-                  onClick={(event) => handleMenuOpen(event, folder)}
+                <IconButton
+                  onClick={(event) => handleMenuOpen(event, file)}
                   sx={{ position: "absolute", top: "5px", right: "5px" }}
                 >
                   <MoreVertIcon />
-                </IconButton> */}
+                </IconButton>
               </Box>
             ))}
           </Box>
@@ -170,15 +245,36 @@ const BinFiles: React.FC = () => {
             </Typography>
           </Box>
         )}
-        {/* <Menu
+        <Menu
           anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleOpenFolder}>Open</MenuItem>
-          <MenuItem onClick={handleDeleteFolder}>Delete</MenuItem>
-        </Menu> */}
+          <MenuItem onClick={handleRestoreFile}>Restore</MenuItem>
+        </Menu>
       </Box>
+
+      {/* Dialog popup for moving folder to bin */}
+      <Dialog open={dialogBinOpen}>
+        <DialogContent>
+          <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
+            <CircularProgress size={24} /> RESTORING FILE..
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ marginTop: "60px" }}
+      />
     </Box>
   );
 };

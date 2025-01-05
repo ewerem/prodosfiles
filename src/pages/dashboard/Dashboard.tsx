@@ -148,7 +148,7 @@ const Dashboard: React.FC = () => {
     setSelectedFolder(folder);
   };
 
-  //wit making setSelectedFolder = null
+  //with making setSelectedFolder = null
   const handleMenuClose = () => {
     setMenuAnchor(null);
     setSelectedFolder(null);
