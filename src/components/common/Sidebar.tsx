@@ -47,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // const [isDialogFileOpen, setIsDialogFileOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -113,7 +114,37 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  // Show toast notifications based on success or error
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!event.target.files) return;
+
+    // Start upload dialog (progress indicator)
+    handleUploadDialogOpen();
+
+    const files = event.target.files;
+    const formData = new FormData();
+    Array.from(files).forEach((file) => {
+      formData.append("files", file);
+    });
+
+    try {
+      const response = await apiForFilesUpload.post("/upload_file/", formData);
+
+      if (response.status === 201) {
+        handleUploadDialogClose();
+        showToast("File uploaded successfully !!", "success");
+        refreshFolders();
+      } else {
+        handleUploadDialogClose();
+        showToast("Failed to upload file. Please try again.", "error");
+      }
+    } catch (error) {
+      handleUploadDialogClose();
+      showToast("An error occurred !!", "error");
+    }
+  };
+
   const showToast = (message: string, type: "success" | "error") => {
     if (type === "success") {
       toast.success(message);
@@ -122,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  //create folder
+  // Folder creation logic
   const handleCreateFolder = async () => {
     if (!folderName.trim()) {
       setError("Folder name is required.");
@@ -148,11 +179,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         throw new Error("Failed to create folder");
       } else {
         showToast(response.data.responseText, "success");
-        // set the forms to empty and stop loader
         setFolderName("");
         setError("");
         setLoading(false);
-        refreshFolders(); //refresh the folders
+        refreshFolders();
       }
     } catch (error: any) {
       const responseText =
@@ -163,52 +193,15 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  //upload file
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    //open dialog loader
-    handleUploadDialogOpen();
-
-    const files = event.target.files;
-    if (!files) return;
-
-    const formData = new FormData();
-    Array.from(files).forEach((file) => {
-      formData.append("files", file);
-    });
-
-    console.log("files-upload -- ", formData);
-
-    try {
-      const response = await apiForFilesUpload.post("/upload_file/", formData);
-
-      console.log("file-response -- ", response);
-
-      if (response.status === 201) {
-        handleUploadDialogClose();
-        showToast("File uploaded successfully !!", "success");
-      } else {
-        handleUploadDialogClose();
-        showToast("Failed to upload file. Please try again.", "error");
-      }
-    } catch (error) {
-      handleUploadDialogClose();
-      showToast("An error occurred !!", "error");
-    }
-  };
-
   useEffect(() => {
     if (folderId) {
       console.log("Current Folder ID in Sidebar:", folderId);
-      // Do something with the folder ID
     }
   }, [folderId]);
 
   return (
     <Drawer variant="permanent" anchor="left">
       <Box sx={{ width: 250, padding: "1rem", marginTop: "4rem" }}>
-        {/* Dropdown Button */}
         <Button
           size="large"
           variant="contained"
@@ -238,24 +231,18 @@ const Sidebar: React.FC<SidebarProps> = ({
             </ListItemIcon>
             <ListItemText primary="New Folder" />
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleMenuClose();
-            }}
-          >
-            <ListItem onClick={handleUploadClick}>
-              <ListItemIcon>
-                <UploadFileIcon />
-              </ListItemIcon>
-              <ListItemText primary="Upload Files" />
-              <input
-                type="file"
-                ref={fileInputRef}
-                multiple
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-            </ListItem>
+          <MenuItem onClick={handleUploadClick}>
+            <ListItemIcon>
+              <UploadFileIcon />
+            </ListItemIcon>
+            <ListItemText primary="Upload Files" />
+            <input
+              type="file"
+              ref={fileInputRef}
+              multiple
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
           </MenuItem>
         </Menu>
 
@@ -267,42 +254,36 @@ const Sidebar: React.FC<SidebarProps> = ({
             </ListItemIcon>
             <ListItemText primary="Folders" />
           </ListItem>
-
           <ListItem onClick={handleClickFiles}>
             <ListItemIcon>
               <FileOpen />
             </ListItemIcon>
             <ListItemText primary="Files" />
           </ListItem>
-
           <ListItem onClick={handleClickStarFile}>
             <ListItemIcon>
               <StarIcon />
             </ListItemIcon>
             <ListItemText primary="Star Files" />
           </ListItem>
-
           <ListItem onClick={handleClickStarFolder}>
             <ListItemIcon>
               <StarIcon />
             </ListItemIcon>
             <ListItemText primary="Star Folders" />
           </ListItem>
-
           <ListItem onClick={handleClickBinFolders}>
             <ListItemIcon>
               <RestoreFromTrash />
             </ListItemIcon>
             <ListItemText primary="Binned Folder" />
           </ListItem>
-
           <ListItem onClick={handleClickBinFiles}>
             <ListItemIcon>
               <DeleteOutlineIcon />
             </ListItemIcon>
             <ListItemText primary="Binned File" />
           </ListItem>
-
           <ListItem onClick={onLogout}>
             <ListItemIcon>
               <Logout sx={{ color: "red" }} />
@@ -355,6 +336,15 @@ const Sidebar: React.FC<SidebarProps> = ({
         </DialogActions>
       </Dialog>
 
+      {/* Dialog for file upload */}
+      <Dialog open={dialogOpen} onClose={handleUploadDialogClose}>
+        <DialogContent>
+          <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
+            <CircularProgress size={24} /> UPLOADING......
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
       {/* Add ToastContainer for toast notifications */}
       <ToastContainer
         position="top-right"
@@ -368,15 +358,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         pauseOnHover
         style={{ marginTop: "60px" }}
       />
-
-      {/* Dialog popup for file loading */}
-      <Dialog open={dialogOpen}>
-        <DialogContent>
-          <DialogContentText sx={{ color: "primary", fontSize: "27px" }}>
-            <CircularProgress size={24} /> UPLOADING......
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
     </Drawer>
   );
 };
