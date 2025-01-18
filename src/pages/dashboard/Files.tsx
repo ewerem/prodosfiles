@@ -230,7 +230,7 @@ const Files: React.FC = () => {
     if (selectedFile) {
       try {
         const data = {
-          folder_id: selectedFile.id,
+          file_id: selectedFile.id,
         };
         const jsonData = JSON.stringify(data);
 
@@ -297,8 +297,10 @@ const Files: React.FC = () => {
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
-      <Navbar onLogout={handleLogout} user={user} refreshFolders={fetchFiles}/>
-      {!isSmallScreen && <Sidebar onLogout={handleLogout} refreshFolders={fetchFiles}/>}
+      <Navbar onLogout={handleLogout} user={user} refreshFolders={fetchFiles} />
+      {!isSmallScreen && (
+        <Sidebar onLogout={handleLogout} refreshFolders={fetchFiles} />
+      )}
       <Box
         component="main"
         sx={{
