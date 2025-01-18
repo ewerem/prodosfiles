@@ -128,6 +128,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       formData.append("files", file);
     });
 
+    if (folderId) {
+      formData.append("parent_folder_id", folderId); 
+    }
+
     try {
       const response = await apiForFilesUpload.post("/upload_file/", formData);
 
