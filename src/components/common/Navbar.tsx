@@ -204,6 +204,7 @@ const Navbar: React.FC<NavbarProps> = ({
       if (response.status === 201) {
         handleUploadDialogClose();
         showToast("File uploaded successfully !!", "success");
+        refreshFolders();
       } else {
         handleUploadDialogClose();
         showToast("Failed to upload file. Please try again.", "error");
